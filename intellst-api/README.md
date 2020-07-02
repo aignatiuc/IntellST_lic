@@ -1,4 +1,3 @@
-# IntellST - Scanner thermique intelligent IntellST 
 **Installation Project**
 
   1.  Checkout
