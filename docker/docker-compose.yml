@@ -244,3 +244,16 @@ services:
         - "${MYSQL_PORT}:3306"
       networks:
         - backend
+
+
+### front #################################################
+    front:
+      build:
+        context: ./front
+      ports:
+        - "8081:8080"
+      networks:
+        - frontend
+        - backend
+      volumes:
+        - ../intellst-front:/usr/app
