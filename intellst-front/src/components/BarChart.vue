@@ -1,11 +1,11 @@
 <script>
-import { Bar } from "../plugins/charts";
+import { Bar } from "vue-chartjs";
 
 export default {
   extends: Bar,
-  mounted() {
-    this.renderChart(
-      {
+  data() {
+    return {
+      chartdata: {
         labels: [
           "Monday",
           "Tuesday",
@@ -23,8 +23,17 @@ export default {
           },
         ],
       },
-      { responsive: true, maintainAspectRatio: false }
-    );
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    };
+  },
+  mounted() {
+    const app = this;
+    this.$nextTick().then(function () {
+      app.renderChart(app.chartdata, app.options);
+    });
   },
 };
 </script>

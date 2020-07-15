@@ -61,5 +61,13 @@ const router = new Router({
     },
   ],
 });
+router.beforeEach((to, from, next) => {
+  if (to.name !== "Login" && !localStorage.getItem("token"))
+    next({ name: "Login" });
+  else if (to.name === "Login" && localStorage.getItem("token"))
+    next({ name: "Home" });
+  // if the user is not authenticated, `next` is called twice
+  next();
+});
 
 export default router;

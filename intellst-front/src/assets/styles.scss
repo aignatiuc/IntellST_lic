@@ -13,19 +13,7 @@
 }
 
 .tile:hover {
-  color: #d01919;
-}
-
-.hone {
-  h1 {
-    font-family: "Helvetica", Arial;
-    color: #6a6a6a;
-    text-transform: uppercase;
-    border-bottom: 1px solid #f1f1f1;
-    padding-bottom: 15px;
-    font-size: 28px;
-    margin-top: 0;
-  }
+  color: var(--red);
 }
 
 .chart {
@@ -36,13 +24,14 @@
 
 .notification-page {
   span {
-    color: red;
+    color: var(--red);
   }
 
   h2 {
     margin-left: 10%;
     padding-bottom: 15px;
   }
+
   a {
     margin-left: 15px;
     text-decoration: underline;
