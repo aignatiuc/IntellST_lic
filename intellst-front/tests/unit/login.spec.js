@@ -14,9 +14,9 @@ describe("Login.vue", () => {
     });
     const form = wrapper.find("v-form");
     expect(form.exists()).toBe(false);
-	});
-	
-	it("render a button", () => {
+  });
+
+  it("render a button", () => {
     const wrapper = shallowMount(Login, {
       mocks: {
         $t: () => {},
