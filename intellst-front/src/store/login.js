@@ -1,6 +1,5 @@
 import Axios from "axios";
 import router from "../router";
-import { BaseUrl } from "../../config";
 
 const login = {
   state: () => ({
@@ -28,7 +27,7 @@ const login = {
   },
   actions: {
     signInAction({ commit }, payload) {
-      Axios.create({ baseURL: BaseUrl })
+      Axios.create({ baseURL: process.env.VUE_APP_BASE_API })
         .post("login_check", {
           username: payload.username,
           password: payload.password,
