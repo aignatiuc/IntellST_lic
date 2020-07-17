@@ -1,6 +1,6 @@
 import Axios from "axios";
 import router from "../router";
-import { BaseUrl } from "./constants";
+import { BaseUrl } from "../../config";
 
 const login = {
   state: () => ({
