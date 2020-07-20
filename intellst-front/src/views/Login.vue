@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-content>
-      <v-container class="fill-height" fluid>
+      <v-container class="fill-height" fluid @keyup.enter="loginUser()">
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
             <v-card class="elevation-12">
@@ -17,6 +17,7 @@
                   <v-text-field
                     label="Login"
                     name="login"
+                    v-model="user.username"
                     prepend-icon="mdi-account"
                     color="red"
                     type="text"
@@ -26,6 +27,7 @@
                     id="password"
                     label="Password"
                     name="password"
+                    v-model="user.password"
                     prepend-icon="mdi-lock"
                     color="red"
                     type="password"
@@ -34,7 +36,9 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="red" to="/">{{ $t("login.entry") }}</v-btn>
+                <v-btn color="red" @click="loginUser(user)">
+                  {{ $t("login.entry") }}
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -43,3 +47,21 @@
     </v-content>
   </v-app>
 </template>
+<script>
+import { mapActions } from "vuex";
+
+export default {
+  data: () => ({
+    user: {
+      username: "",
+      password: "",
+    },
+  }),
+  methods: {
+    ...mapActions(["signInAction"]),
+    loginUser() {
+      this.signInAction(this.user);
+    },
+  },
+};
+</script>

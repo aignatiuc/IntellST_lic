@@ -2,11 +2,9 @@
   <v-flex xs12>
     <v-container class="justify-content-center">
       <v-toolbar dense color="gradient" height="80">
-        <v-toolbar-content>
-          <text-field>
-            <h1>{{ $t("cases.title") }}</h1>
-          </text-field>
-        </v-toolbar-content>
+        <v-toolbar-title>
+          <h1>{{ $t("cases.title") }}</h1>
+        </v-toolbar-title>
       </v-toolbar>
       <v-expansion-panels multiple focusable>
         <v-expansion-panel v-for="(item, i) in 5" :key="i">
@@ -49,6 +47,7 @@
 import PersonPhoto from "../components/PersonPhoto";
 
 export default {
+  name: "ConsultCases",
   components: {
     PersonPhoto,
   },
