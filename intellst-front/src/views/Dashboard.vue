@@ -62,7 +62,7 @@
           </v-chip>
         </template>
         <v-card width="300">
-          <v-list dark>
+          <v-list>
             <v-list-item>
               <v-list-item-avatar>
                 <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
@@ -88,10 +88,14 @@
           </v-list>
         </v-card>
       </v-menu>
-      <v-btn text @click="logout"><v-icon>mdi-exit-to-app</v-icon></v-btn>
+      <v-btn text @click="logout">
+        <v-icon>mdi-exit-to-app</v-icon>
+      </v-btn>
     </v-app-bar>
 
-    <v-content><router-view /></v-content>
+    <v-content>
+      <router-view />
+    </v-content>
 
     <v-footer app padless>
       <v-card-text class="py-2 white--text text-center">
@@ -122,6 +126,7 @@ export default {
       this.$router.push("/");
     },
     logout() {
+      localStorage.removeItem("token");
       this.$router.push("/login");
       //TODO call mutation with empty tokens
       //TODO after it redirect it to auth page
