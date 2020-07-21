@@ -54,7 +54,7 @@ describe("Dashboard", () => {
         $t: () => {},
       },
     });
-    const content = wrapper.find("v-content");
+    const content = wrapper.find("v-main");
     expect(content.exists()).toBe(false);
   });
 

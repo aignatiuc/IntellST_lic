@@ -2,6 +2,7 @@ import Axios from "axios";
 import router from "../router";
 
 const login = {
+  namespaced: true,
   state: () => ({
     userToken: null,
     allData: null,
@@ -26,7 +27,7 @@ const login = {
     },
   },
   actions: {
-    signInAction({ commit }, payload) {
+    signInAction({ commit, dispatch }, payload) {
       Axios.create({ baseURL: process.env.VUE_APP_BASE_API })
         .post("login_check", {
           username: payload.username,
@@ -39,6 +40,14 @@ const login = {
           commit("setError", null);
           localStorage.setItem("token", x.token);
           router.push("/");
+          dispatch(
+            "snackbar/showSnack",
+            {
+              message: "You've succesfully logged in!",
+              type: "error",
+            },
+            { root: true }
+          );
         })
         .catch((error) => {
           alert(error);
