@@ -55,23 +55,6 @@ class EnterpriseHandlerTest extends TestCase
         $this->assertCount(0, $result);
     }
 
-    public function testValidateEditEnterpriseNullUsers(): void
-    {
-        $enterprise = new Enterprise();
-        $enterprise->setName('UTM');
-        $enterprise->setTemperature(38);
-        $enterprise->setRestrictionPeriod(14);
-
-        $handler = $this->getHandler();
-        $dto = $this->getEnterpriseDTO();
-
-        $result = $handler->updateEnterprise($dto, $enterprise);
-
-        $this->assertCount(1, $result);
-        $this->assertEquals('users', $result->get(0)->getPropertyPath());
-        $this->assertEquals('This value should not be blank.', $result->get(0)->getMessage());
-    }
-
     public function testValidateMinTemperature(): void
     {
         $enterprise = new Enterprise();
