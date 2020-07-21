@@ -6,7 +6,7 @@
           <h1>{{ $t("faq.title1") }}</h1>
         </v-toolbar-title>
       </v-toolbar>
-      <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+      <v-expansion-panels multiple>
         <v-expansion-panel v-for="(item, i) in $t('faq.items')" :key="i">
           <v-expansion-panel-header
             class="font-weight-bold"

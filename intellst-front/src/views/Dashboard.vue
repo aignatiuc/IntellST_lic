@@ -1,42 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
-      app
-      clipped
-      width="200"
-      permanent
-      expand-on-hover
-      color="grey darken-4"
-      class="transparent"
-    >
-      <v-list dense class="tile">
-        <v-list-item link to="/">
-          <v-icon>mdi-home</v-icon>
-          <v-list-item-action class="mt-5">
-            <v-list-item-title>{{ $t("menu.home") }}</v-list-item-title>
-          </v-list-item-action>
-        </v-list-item>
-        <v-list-item link to="/cases">
-          <v-icon>mdi-folder-open</v-icon>
-          <v-list-item-action class="mt-5">
-            <v-list-item-title>{{ $t("menu.cases") }}</v-list-item-title>
-          </v-list-item-action>
-        </v-list-item>
-        <v-list-item link to="/settings">
-          <v-icon>mdi-cog</v-icon>
-          <v-list-item-action class="mt-5">
-            <v-list-item-title>{{ $t("menu.settings") }}</v-list-item-title>
-          </v-list-item-action>
-        </v-list-item>
-        <v-list-item link to="/FAQ">
-          <v-icon>mdi-help-circle</v-icon>
-          <v-list-item-action class="mt-5">
-            <v-list-item-title>{{ $t("menu.faq") }}</v-list-item-title>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
+    <Menu />
     <v-app-bar app color="grey darken-4" clipped-left>
       <img
         :src="require('@/assets/logo.svg')"
@@ -52,50 +16,17 @@
         </v-badge>
       </v-btn>
 
-      <v-menu bottom right transition="scale-transition" origin="top left">
-        <template v-slot:activator="{ on }">
-          <v-chip pill v-on="on" color="transparent">
-            <v-avatar left>
-              <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-            </v-avatar>
-            John Leider
-          </v-chip>
-        </template>
-        <v-card width="300">
-          <v-list>
-            <v-list-item>
-              <v-list-item-avatar>
-                <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>John Leider</v-list-item-title>
-                <v-list-item-subtitle>john@vuetifyjs.com</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-btn icon>
-                  <v-icon>mdi-close-circle</v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-          <v-list>
-            <v-list-item @click="() => {}">
-              <v-list-item-action>
-                <v-icon>mdi-briefcase</v-icon>
-              </v-list-item-action>
-              <v-list-item-subtitle>john@gmail.com</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-menu>
+      <User />
       <v-btn text @click="logout">
         <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
     </v-app-bar>
 
-    <v-content>
+    <v-main>
       <router-view />
-    </v-content>
+    </v-main>
+
+    <Snackbar />
 
     <v-footer app padless>
       <v-card-text class="py-2 white--text text-center">
@@ -108,9 +39,16 @@
 
 <script>
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import Menu from "../components/Menu";
+import User from "../components/NavUser";
+import Snackbar from "../components/Snackbar";
+
 export default {
   components: {
     LanguageSwitcher,
+    Menu,
+    User,
+    Snackbar,
   },
   data() {
     return {
