@@ -48,9 +48,6 @@ const login = {
             },
             { root: true }
           );
-        })
-        .catch((error) => {
-          alert(error);
         });
     },
   },
