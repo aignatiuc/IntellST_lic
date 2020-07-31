@@ -41,10 +41,10 @@
                   prepend-icon="mdi-lock"
                   color="red"
                   name="password"
-                  :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                   :rules="[rules.required]"
-                  :type="show1 ? 'text' : 'password'"
-                  @click:append="show1 = !show1"
+                  :type="showPassword ? 'text' : 'password'"
+                  @click:append="showPassword = !showPassword"
                 >
                 </v-text-field>
               </v-form>
@@ -71,7 +71,7 @@ export default {
       username: "",
       password: "",
     },
-    show1: false,
+    showPassword: false,
     rules: {
       requiredMail: (value) => !!value || "Please insert your email",
       required: (value) => !!value || "Please insert your password",
@@ -94,7 +94,6 @@ export default {
       this.signInAction(this.user);
       setTimeout(() => {
         this.status = 401;
-        console.log(this.show);
       }, 2000);
     },
   },
