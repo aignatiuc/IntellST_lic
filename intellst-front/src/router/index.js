@@ -45,6 +45,11 @@ const router = new Router({
               name: "NotificationPage",
               component: () => import("../views/NotificationPage.vue"),
             },
+            {
+              path: "/camera",
+              name: "Camera",
+              component: () => import("../views/VCamera.vue"),
+            },
           ],
         },
       ],
@@ -60,6 +65,14 @@ const router = new Router({
       component: NotFound,
     },
   ],
+});
+router.beforeEach((to, from, next) => {
+  if (to.name !== "Login" && !localStorage.getItem("token"))
+    next({ name: "Login" });
+  else if (to.name === "Login" && localStorage.getItem("token"))
+    next({ name: "Home" });
+  // if the user is not authenticated, `next` is called twice
+  next();
 });
 
 export default router;
