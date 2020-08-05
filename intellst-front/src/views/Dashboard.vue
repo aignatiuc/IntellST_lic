@@ -1,6 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-menu />
+
     <v-app-bar app color="grey darken-4" clipped-left>
       <img
         :src="require('@/assets/logo.svg')"
@@ -9,7 +10,9 @@
         @click="home"
       />
       <v-spacer></v-spacer>
+
       <language-switcher />
+
       <v-btn icon link to="/camera">
         <v-icon>mdi-cctv</v-icon>
       </v-btn>
@@ -20,6 +23,7 @@
       </v-btn>
 
       <v-user />
+
       <v-btn text @click="logout">
         <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
@@ -66,6 +70,7 @@ export default {
     home() {
       this.$router.push("/");
     },
+
     logout() {
       localStorage.removeItem("token");
       this.$router.push("/login");
