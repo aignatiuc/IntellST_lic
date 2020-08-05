@@ -4,6 +4,7 @@ namespace App\DTO;
 
 use DateTime;
 use JMS\Serializer\Annotation as Serializer;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class IdentifiedCaseDTO
@@ -22,6 +23,14 @@ class IdentifiedCaseDTO
      * @Assert\NotBlank
      */
     public string $photoFilename;
+
+    /**
+     * @Serializer\Expose()
+     * @Serializer\SerializedName("uuid")
+     * @Serializer\Type("string")
+     * @Assert\NotBlank
+     */
+    public string $uuid;
 
     /**
      * @Serializer\Expose()
@@ -44,4 +53,23 @@ class IdentifiedCaseDTO
      * @Serializer\SerializedName("firstDate")
      */
     public DateTime $firstDate;
+
+//    /**
+//     * @Serializer\Expose()
+//     * @Serializer\SerializedName("enterprise")
+//     * @Serializer\Type("integer")
+//     * @Assert\NotBlank
+//     */
+//    public int $enterprise;
+
+    /**
+     * Enterprise IdentifiedCase
+     * @var integer
+     * @Assert\NotNull
+     * @Serializer\Type("integer")
+     * @Serializer\Expose()
+     * @Serializer\SerializedName("enterprise")
+     */
+    public $enterprise;
+
 }

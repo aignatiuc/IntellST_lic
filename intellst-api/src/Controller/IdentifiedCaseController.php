@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\DTO\IdentifiedCaseDTO;
+use App\DTO\IdentifiedCaseTemperatureDTO;
 use App\Entity\IdentifiedCase;
+use App\Repository\IdentifiedCaseRepository;
 use App\Services\IdentifiedCaseHandler;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -31,15 +33,22 @@ class IdentifiedCaseController extends AbstractController
      */
     private $validationErrorSerializer;
 
+    /**
+     * @var IdentifiedCaseRepository
+     */
+    private $identifiedCaseRepository;
+
     public function __construct(
         IdentifiedCaseHandler $identifiedCaseHandler,
         SerializerInterface $serializer,
-        ValidationErrorSerializer $validationErrorSerializer
+        ValidationErrorSerializer $validationErrorSerializer,
+        IdentifiedCaseRepository $identifiedCaseRepository
     )
     {
         $this->serializer = $serializer;
         $this->identifiedCaseHandler = $identifiedCaseHandler;
         $this->validationErrorSerializer = $validationErrorSerializer;
+        $this->identifiedCaseRepository = $identifiedCaseRepository;
     }
 
     /**
@@ -66,6 +75,21 @@ class IdentifiedCaseController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
+
+        $returnAttempt = $this->identifiedCaseHandler->returnAttempt($addIdentifiedCaseDTO);
+
+        if ($returnAttempt===true) {
+            var_dump($returnAttempt);
+            return new JsonResponse(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' =>'This person does not have access',
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+//        return new JsonResponse($returnAttempt);
 
         return new JsonResponse(['message' => 'Identified Case added successfully'], Response::HTTP_OK);
     }
@@ -107,4 +131,57 @@ class IdentifiedCaseController extends AbstractController
 
         return new JsonResponse(['message' => 'Entry allowed successfully'], Response::HTTP_OK);
     }
+//
+//    /**
+//     * @Route("/api/show-identified-case/{day}", name="show_list_identified_case", methods={"GET"})
+//     */
+//    public function showNewIdentifiedCase(int $day): JsonResponse
+//    {
+//        $notification = $this->identifiedCaseHandler->showIdentifiedCase($day);
+//
+//        return new JsonResponse($notification);
+//    }
+
+
+    /**
+     * @Route("/api/show-identified-case", name="show_list_return_attempt", methods={"POST"})
+     */
+    public function showReturnAttempt(Request $request): JsonResponse
+    {
+        $data = $request->getContent();
+
+        $temperatureDTO = $this->serializer->deserialize(
+            $data,
+            IdentifiedCaseDTO::class,
+            'json'
+        );
+
+        $returnAttempt = $this->identifiedCaseHandler->returnAttempt($temperatureDTO);
+
+        return new JsonResponse($returnAttempt);
+
+    }
+
+
+//    /**
+//     * @Route("/api/show-identified-case/{day}", name="show_list_return_attempt", methods={"POST"})
+//     */
+//    public function showReturnAttempt(Request $request, string $day): JsonResponse
+//    {
+//        $data = $request->getContent();
+//
+//        $uuidDTO = $this->serializer->deserialize(
+//            $data,
+//            IdentifiedCaseUuidDTO::class,
+//            'json'
+//        );
+//
+//        $returnAttempt = $this->identifiedCaseHandler->returnAttempt($day, $uuidDTO);
+//
+//        return new JsonResponse($returnAttempt);
+//
+//    }
+
+
+
 }

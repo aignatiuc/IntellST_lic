@@ -15,4 +15,13 @@ class EnterpriseTransformer
         return $enterprise;
     }
 
+    public function transformEntityToDTO(Enterprise $enterprise): EnterpriseDTO
+    {
+        $enterpriseDTO = new EnterpriseDTO();
+        $enterpriseDTO->temperature = $enterprise->getTemperature();
+        $enterpriseDTO->restrictionPeriod = $enterprise->getRestrictionPeriod();
+
+        return $enterpriseDTO;
+    }
+
 }

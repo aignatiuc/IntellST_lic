@@ -33,22 +33,56 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    // /**
-    //  * @return IdentifiedCase[] Returns an array of IdentifiedCase objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function showNewIdentifiedCase(int $day, float $temperature)
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
+        $items = strval($day);
+
+        $date = new \DateTime();
+        $date->modify("-" . $items . " day");
+
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->Where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.temperature > :temperature')
+            ->setParameter(':temperature', $temperature)
             ->getQuery()
-            ->getResult()
-        ;
+            ->execute();
     }
-    */
+
+    public function returnAttempt(int $day, float $temperature, string $uuid)
+    {
+        $period = strval($day);
+
+        $date = new \DateTime();
+        $date->modify("-" . $period . " day");
+
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->Where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.temperature > :temperature')
+            ->setParameter(':temperature', $temperature)
+            ->andWhere('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()
+            ->execute();
+    }
+
+
+//     /**
+//      * @return IdentifiedCase[] Returns an array of IdentifiedCase objects
+//      */
+
+//    public function findByExampleField($value)
+//    {
+//        return $this->createQueryBuilder('i')
+//            ->andWhere('i.temperature = :temperature')
+//            ->setParameter('temperature', $value)
+//            ->orderBy('i.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
     /*
     public function findOneBySomeField($value): ?IdentifiedCase
