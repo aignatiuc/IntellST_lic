@@ -65,7 +65,7 @@ const login = {
     getUserInfo({ commit, state }) {
       commit("setToken", localStorage.getItem("token"));
 
-      Axios.get(`${process.env.VUE_APP_BASE_API}api/user`, {
+      Axios.get(`${process.env.VUE_APP_BASE_API}/api/user`, {
         headers: { Authorization: `Bearer ${state.userToken}` },
       })
         .then(({ data }) => {
