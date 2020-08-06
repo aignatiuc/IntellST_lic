@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios from "../api/axios.js";
 import router from "../router";
 
 const login = {
@@ -37,17 +37,16 @@ const login = {
   },
   actions: {
     signInAction({ commit, dispatch }, payload) {
-      Axios.create({ baseURL: process.env.VUE_APP_BASE_API })
-        .post("login_check", {
-          username: payload.username,
-          password: payload.password,
-        })
+      Axios.post("login_check", {
+        username: payload.username,
+        password: payload.password,
+      })
         .then(({ data: { token } }) => {
           commit("setToken", token);
           commit("setStatus", "success");
 
           localStorage.setItem("token", token);
-          dispatch("getUserInfo");
+
           router.push("/");
           dispatch(
             "snackbar/showSnack",
@@ -62,18 +61,14 @@ const login = {
           commit("setError", e);
         });
     },
-    getUserInfo({ commit, state }) {
-      commit("setToken", localStorage.getItem("token"));
-
-      Axios.get(`${process.env.VUE_APP_BASE_API}/api/user`, {
-        headers: { Authorization: `Bearer ${state.userToken}` },
-      })
+    getUserInfo({ commit }) {
+      Axios.get(`/api/user`)
         .then(({ data }) => {
           commit("setUser", { ...data[0] });
         })
         .catch(() => {
-          localStorage.removeItem("token");
-          router.push("/login");
+          // localStorage.removeItem("token");
+          // router.push("/login");
         });
     },
   },
