@@ -35,10 +35,10 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
 
     public function showNewIdentifiedCase(int $day, float $temperature)
     {
-        $items = strval($day);
+        $period = strval($day);
 
         $date = new \DateTime();
-        $date->modify("-" . $items . " day");
+        $date->modify("-" . $period . " day");
 
         return $this->createQueryBuilder('IdentifiedCase')
             ->Where('IdentifiedCase.firstDate > :date')
