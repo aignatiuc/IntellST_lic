@@ -4,8 +4,6 @@ namespace App\Transformer;
 
 use App\DTO\AllowEntranceDTO;
 use App\DTO\IdentifiedCaseDTO;
-use App\DTO\IdentifiedCaseTemperatureDTO;
-use App\DTO\IdentifiedCaseUuidDTO;
 use App\Entity\Enterprise;
 use App\Entity\IdentifiedCase;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +28,9 @@ class IdentifiedCaseTransformer
         $identifiedCase->setTemperature($dto->temperature);
         $identifiedCase->setDatePhoto(new \DateTime());
         $identifiedCase->setFirstDate(new \DateTime());
+        $data = new \DateTime();
+        $data->modify('-1 day');
+        $identifiedCase->setAllowEntrance($data);
         $enterprise = $this->em->getRepository(Enterprise::class)->find($dto->enterprise);
         $identifiedCase->setEnterprise($enterprise);
         return $identifiedCase;
@@ -49,18 +50,10 @@ class IdentifiedCaseTransformer
         return $identifiedCaseDTO;
     }
 
-    public function transformDTOToEntityAllowEntrance(AllowEntranceDTO $dto, IdentifiedCase $identifiedCase): IdentifiedCase
+    public function transformDTOToEntityAllowEntrance(IdentifiedCase $identifiedCase): IdentifiedCase
     {
         $identifiedCase->setAllowEntrance(new \DateTime());
 
         return $identifiedCase;
-    }
-
-    public function transformEntityToDTOReturnAttempt(IdentifiedCase $identifiedCase): IdentifiedCaseTemperatureDTO
-    {
-        $identifiedCaseTemperatureDTO = new IdentifiedCaseTemperatureDTO();
-        $identifiedCaseTemperatureDTO->temperature = $identifiedCase->getTemperature();
-
-        return $identifiedCaseTemperatureDTO;
     }
 }

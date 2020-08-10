@@ -5,8 +5,10 @@ namespace App\Services;
 use App\DTO\AllowEntranceDTO;
 use App\DTO\EnterpriseDTO;
 use App\DTO\IdentifiedCaseDTO;
+use App\DTO\UserDTO;
 use App\Entity\Enterprise;
 use App\Entity\IdentifiedCase;
+use App\Entity\User;
 use App\Repository\EnterpriseRepository;
 use App\Repository\IdentifiedCaseRepository;
 use App\Transformer\EnterpriseTransformer;
@@ -26,17 +28,16 @@ class IdentifiedCaseHandler
     /** @var IdentifiedCaseTransformer */
     private $identifiedCaseTransformer;
 
+    /** @var UserHandler */
+    private $userHandler;
+
     /** @var EnterpriseTransformer */
     private $enterpriseTransformer;
 
-    /**
-     * @var IdentifiedCaseRepository
-     */
+    /**@var IdentifiedCaseRepository */
     private $identifiedCaseRepository;
 
-    /**
-     * @var EnterpriseRepository
-     */
+    /**@var EnterpriseRepository */
     private $enterpriseRepository;
 
     public function __construct(
@@ -44,7 +45,8 @@ class IdentifiedCaseHandler
         ValidatorInterface $validator,
         IdentifiedCaseTransformer $identifiedCaseTransformer,
         IdentifiedCaseRepository $identifiedCaseRepository,
-        EnterpriseTransformer $enterpriseTransformer
+        EnterpriseTransformer $enterpriseTransformer,
+        UserHandler $userHandler
     ) {
         $this->em = $em;
         $this->validator = $validator;
@@ -53,6 +55,7 @@ class IdentifiedCaseHandler
         $this->identifiedCaseRepository = $this->em->getRepository(IdentifiedCase::class);
         $this->enterpriseRepository = $this->em->getRepository(Enterprise::class);
         $this->enterpriseTransformer = $enterpriseTransformer;
+        $this->userHandler = $userHandler;
     }
 
     public function updateIdentifiedCase(IdentifiedCaseDTO $dto): ConstraintViolationListInterface
@@ -86,16 +89,11 @@ class IdentifiedCaseHandler
         return $arr;
     }
 
-    public function updateIdentifiedCaseAllowEntrance(AllowEntranceDTO $dto, IdentifiedCase $identifiedCase): ConstraintViolationListInterface
+    public function updateIdentifiedCaseAllowEntrance(IdentifiedCase $identifiedCase): ConstraintViolationListInterface
     {
-        $identifiedCase = $this->identifiedCaseTransformer->transformDTOToEntityAllowEntrance($dto,$identifiedCase);
+        $identifiedCase = $this->identifiedCaseTransformer->transformDTOToEntityAllowEntrance($identifiedCase);
 
         $errors = $this->validator->validate($identifiedCase);
-        $dtoErrors = $this->validator->validate($dto, null);
-
-        foreach ($dtoErrors as $error) {
-            $errors->add($error);
-        }
 
         if ($errors->count() === 0) {
             $this->em->persist($identifiedCase);
@@ -105,9 +103,12 @@ class IdentifiedCaseHandler
         return $errors;
     }
 
-    public function showIdentifiedCase(int $value): array
+    public function showIdentifiedCase(): array
     {
-        $users = $this->identifiedCaseRepository->showNewIdentifiedCase($value);
+        $user = $this->userHandler->getList();
+        $temperature = $this->returnEnterpriseUser($user)->temperature;
+        $data = $this->returnEnterpriseUser($user)->restrictionPeriod;
+        $users = $this->identifiedCaseRepository->showNewIdentifiedCase($data, $temperature);
         $arr = [];
         foreach ($users as $identifiedCase) {
             $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
@@ -135,10 +136,55 @@ class IdentifiedCaseHandler
         else return false;
     }
 
+    public function allowEntrance(IdentifiedCaseDTO $dto): bool
+    {
+        $uuid = $dto->uuid;
+        $list = $this->identifiedCaseRepository->allowEntrance($uuid);
+        $arr = [];
+        foreach ($list as $identifiedCase) {
+            $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
+            $arr[] = $identifiedCaseDTO;
+        }
+        if (!empty($arr)) {
+
+            return true ;
+        }
+        else return false;
+    }
+
     private function returnEnterprise(IdentifiedCaseDTO $dto): EnterpriseDTO
     {
         $enterprise = $this->enterpriseRepository->find($dto->enterprise);
         $enterpriseDTO = $this->enterpriseTransformer->transformEntityToDTO($enterprise);
+
         return $enterpriseDTO;
+    }
+
+    private function returnEnterpriseUser(UserDTO $dto): EnterpriseDTO
+    {
+        $enterprise = $this->enterpriseRepository->find($dto->enterprise);
+        $enterpriseDTO = $this->enterpriseTransformer->transformEntityToDTO($enterprise);
+
+        return $enterpriseDTO;
+    }
+
+    public function showReturnAttempt(): array
+    {
+        $user = $this->userHandler->getList();
+        $temperature = $this->returnEnterpriseUser($user)->temperature;
+        $data = $this->returnEnterpriseUser($user)->restrictionPeriod;
+        $users = $this->identifiedCaseRepository->showNewIdentifiedCase($data, $temperature);
+        $arr = [];
+        foreach ($users as $identifiedCase) {
+            $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
+            $returnAttempt = $this->identifiedCaseRepository->showReturnAttempt($identifiedCaseDTO->uuid, $identifiedCaseDTO->firstDate);
+            if (!empty($returnAttempt)){
+            foreach ($returnAttempt as $case) {
+                $caseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($case);
+                $arr[] = $caseDTO;
+            }
+            }
+        }
+        return $arr;
     }
 }

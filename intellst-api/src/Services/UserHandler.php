@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DTO\UserDTO;
 use App\Entity\User;
 use App\Transformer\UserTransformer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,12 +49,10 @@ class UserHandler
         $this->user = $tokenStorage->getToken()->getUser();
     }
 
-    public function getList(): array
+    public function getList(): UserDTO
     {
-        $arr = [];
         $userDTO = $this->transformer->transformEntityToDTO($this->user);
-        $arr[] = $userDTO;
 
-        return $arr;
+        return $userDTO;
     }
 }

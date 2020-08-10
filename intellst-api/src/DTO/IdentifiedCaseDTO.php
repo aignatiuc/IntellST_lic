@@ -54,14 +54,6 @@ class IdentifiedCaseDTO
      */
     public DateTime $firstDate;
 
-//    /**
-//     * @Serializer\Expose()
-//     * @Serializer\SerializedName("enterprise")
-//     * @Serializer\Type("integer")
-//     * @Assert\NotBlank
-//     */
-//    public int $enterprise;
-
     /**
      * Enterprise IdentifiedCase
      * @var integer

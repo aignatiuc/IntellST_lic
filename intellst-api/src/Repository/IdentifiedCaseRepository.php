@@ -67,6 +67,29 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function showReturnAttempt(string $uuid, $data)
+    {
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->Where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $data)
+            ->andWhere('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function allowEntrance(string $uuid)
+    {
+        $data = new \DateTime();
+        $data->modify('-1 day');
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->Where('IdentifiedCase.allowEntrance > :date')
+            ->setParameter(':date', $data)
+            ->andWhere('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()
+            ->execute();
+    }
 
 //     /**
 //      * @return IdentifiedCase[] Returns an array of IdentifiedCase objects
