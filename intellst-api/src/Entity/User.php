@@ -114,14 +114,17 @@ class User implements UserInterface
 
         return $this;
     }
+
     public function getUsername()
     {
         // TODO: Implement getUsername() method.
     }
+
     public function getSalt()
     {
         return null;
     }
+
     public function getRoles(): array
     {
         return ['ROLE_USER'];

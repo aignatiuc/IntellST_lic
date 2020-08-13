@@ -42,8 +42,7 @@ class IdentifiedCaseController extends AbstractController
         SerializerInterface $serializer,
         ValidationErrorSerializer $validationErrorSerializer,
         IdentifiedCaseRepository $identifiedCaseRepository
-    )
-    {
+    ) {
         $this->serializer = $serializer;
         $this->identifiedCaseHandler = $identifiedCaseHandler;
         $this->validationErrorSerializer = $validationErrorSerializer;
@@ -73,17 +72,16 @@ class IdentifiedCaseController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
-        $allowEntrance = $this->identifiedCaseHandler->allowEntrance($addIdentifiedCaseDTO);
-        if ($allowEntrance===true) {
+        $allowEntrance = $this->identifiedCaseHandler->entranceAllowed($addIdentifiedCaseDTO);
+        if ($allowEntrance === true) {
             return new JsonResponse(['message' => 'Allow Entrance'], Response::HTTP_OK);
-
         }
-        $returnAttempt = $this->identifiedCaseHandler->returnAttempt($addIdentifiedCaseDTO);
-        if ($returnAttempt===true) {
+        $returnAttempt = $this->identifiedCaseHandler->getReturnAttempts($addIdentifiedCaseDTO);
+        if ($returnAttempt === true) {
             return new JsonResponse(
                 [
                     'code' => Response::HTTP_BAD_REQUEST,
-                    'message' =>'This person does not have access',
+                    'message' => 'This person does not have access',
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -105,7 +103,7 @@ class IdentifiedCaseController extends AbstractController
     /**
      * @Route("/api/allow-entrance/{uuid}", name="edit_identified_case", methods={"POST"})
      */
-    public function editAllowEntrance1(IdentifiedCase $identifiedCase): JsonResponse
+    public function editAllowEntrance(IdentifiedCase $identifiedCase): JsonResponse
     {
         $errors = $this->identifiedCaseHandler->updateIdentifiedCaseAllowEntrance($identifiedCase);
         if ($errors->count()) {
@@ -125,21 +123,20 @@ class IdentifiedCaseController extends AbstractController
     /**
      * @Route("/api/show-identified-case", name="show_list_new_identified_case", methods={"GET"})
      */
-    public function showNewIdentifiedCase(): JsonResponse
+    public function getNewIdentifiedCase(): JsonResponse
     {
-        $notification = $this->identifiedCaseHandler->showIdentifiedCase();
+        $notification = $this->identifiedCaseHandler->getIdentifiedCase();
 
         return new JsonResponse($notification);
     }
 
     /**
-    * @Route("/api/show-return-attempt", name="show_list_return_attempt", methods={"GET"})
-    */
-    public function showReturnAttempt(): JsonResponse
+     * @Route("/api/show-return-attempt", name="show_list_return_attempt", methods={"GET"})
+     */
+    public function getReturnAttempt(): JsonResponse
     {
-        $returnAttempt = $this->identifiedCaseHandler->showReturnAttempt();
+        $returnAttempt = $this->identifiedCaseHandler->getReturnAttempt();
 
         return new JsonResponse($returnAttempt);
     }
-
 }

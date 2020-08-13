@@ -41,8 +41,7 @@ class UserHandler
         EntityManagerInterface $em,
         UserTransformer $transformer,
         TokenStorageInterface $tokenStorage
-    )
-    {
+    ) {
         $this->em = $em;
         $this->transformer = $transformer;
         $this->userRepository = $this->em->getRepository(User::class);

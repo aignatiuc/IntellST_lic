@@ -4,7 +4,6 @@ namespace App\DTO;
 
 use DateTime;
 use JMS\Serializer\Annotation as Serializer;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class IdentifiedCaseDTO
