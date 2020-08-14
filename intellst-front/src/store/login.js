@@ -62,13 +62,29 @@ const login = {
         });
     },
     getUserInfo({ commit }) {
-      Axios.get(`/api/user`)
+      Axios.get("/api/user")
         .then(({ data }) => {
           commit("setUser", { ...data[0] });
         })
         .catch(() => {
           // localStorage.removeItem("token");
           // router.push("/login");
+        });
+    },
+    setSettings({ commit }, payload) {
+      Axios.post("/api/entreprises/1", {
+        temperature: payload.temperature,
+        restrictionPeriod: payload.restrictionPeriod,
+      })
+        .then(({ data: { token } }) => {
+          commit("setToken", token);
+          commit("setStatus", "success");
+
+          localStorage.setItem("token", token);
+        })
+
+        .catch((e) => {
+          commit("setError", e);
         });
     },
   },

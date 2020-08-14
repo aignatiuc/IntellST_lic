@@ -38,7 +38,9 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   mounted() {
-    this.getUserInfo();
+    this.$nextTick(() => {
+      this.getUserInfo();
+    });
   },
   computed: {
     ...mapState("login", ["userToken", "userData"]),

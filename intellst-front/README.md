@@ -73,3 +73,21 @@ example
     "username":"user@gmail.com",
     "password":"user"
 }
+
+` http://intellst-back.local/api/user ` show user info, method: GET
+
+data
+{
+    id: integer,
+    firstname: string, 
+    lastname: string,
+    email: string, email
+}
+
+example
+{
+    "id": 1,
+    "firstname": "Admin",
+    "lastname": "Admin",
+    "email":"admin@gmail.com"
+}
