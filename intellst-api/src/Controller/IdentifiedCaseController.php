@@ -133,9 +133,9 @@ class IdentifiedCaseController extends AbstractController
     /**
      * @Route("/api/show-return-attempt", name="show_list_return_attempt", methods={"GET"})
      */
-    public function getReturnAttempt(): JsonResponse
+    public function getReturnAttempts(): JsonResponse
     {
-        $returnAttempt = $this->identifiedCaseHandler->getReturnAttempt();
+        $returnAttempt = $this->identifiedCaseHandler->getRecentReturnAttempts();
 
         return new JsonResponse($returnAttempt);
     }

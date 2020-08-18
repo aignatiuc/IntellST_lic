@@ -54,12 +54,12 @@ class Enterprise
     /**
      * @ORM\OneToMany(targetEntity=IdentifiedCase::class, mappedBy="enterprise")
      */
-    private $identifiedCase;
+    private $identifiedCases;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->identifiedCase = new ArrayCollection();
+        $this->identifiedCases = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,13 +139,13 @@ class Enterprise
      */
     public function getIdentifiedCases(): Collection
     {
-        return $this->identifiedCase;
+        return $this->identifiedCases;
     }
 
     public function addIdentifiedCase(IdentifiedCase $identifiedCase): self
     {
-        if (!$this->identifiedCase->contains($identifiedCase)) {
-            $this->identifiedCase[] = $identifiedCase;
+        if (!$this->identifiedCases->contains($identifiedCase)) {
+            $this->identifiedCases[] = $identifiedCase;
             $identifiedCase->setEnterprise($this);
         }
 
@@ -154,8 +154,8 @@ class Enterprise
 
     public function removeIdentifiedCase(IdentifiedCase $identifiedCase): self
     {
-        if ($this->identifiedCase->contains($identifiedCase)) {
-            $this->identifiedCase->removeElement($identifiedCase);
+        if ($this->identifiedCases->contains($identifiedCase)) {
+            $this->identifiedCases->removeElement($identifiedCase);
             // set the owning side to null (unless already changed)
             if ($identifiedCase->getEnterprise() === $this) {
                 $identifiedCase->setEnterprise(null);

@@ -48,7 +48,7 @@ class UserHandler
         $this->user = $tokenStorage->getToken()->getUser();
     }
 
-    public function getList(): UserDTO
+    public function getCurrentUser(): UserDTO
     {
         $userDTO = $this->transformer->transformEntityToDTO($this->user);
 

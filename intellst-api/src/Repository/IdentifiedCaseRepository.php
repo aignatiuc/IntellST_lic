@@ -44,10 +44,10 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->andWhere('IdentifiedCase.temperature > :temperature')
             ->setParameter(':temperature', $temperature)
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 
-    public function getReturnAttempts(int $day, float $temperature, string $uuid)
+    public function getReturnAttempts(int $day, float $temperature, string $uuid): array
     {
         $date = new \DateTime();
         $date->modify("-" . $day . " day");
@@ -60,21 +60,21 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->andWhere('IdentifiedCase.uuid = :uuid')
             ->setParameter(':uuid', $uuid)
             ->getQuery()
-            ->execute();
+            ->getResult();
     }
 
-    public function getReturnAttempt(string $uuid, $data)
+    public function getRecentReturnAttempts(string $uuid, $date)
     {
         return $this->createQueryBuilder('IdentifiedCase')
             ->where('IdentifiedCase.firstDate > :date')
-            ->setParameter(':date', $data)
+            ->setParameter(':date', $date)
             ->andWhere('IdentifiedCase.uuid = :uuid')
             ->setParameter(':uuid', $uuid)
             ->getQuery()
             ->getResult();
     }
 
-    public function entranceAllowed(string $uuid)
+    public function entranceAllowed(string $uuid): array
     {
         $date = new \DateTime();
         $date->modify('-1 day');

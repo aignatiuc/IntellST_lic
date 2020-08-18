@@ -105,7 +105,7 @@ class IdentifiedCaseHandler
 
     public function getIdentifiedCase(): array
     {
-        $user = $this->userHandler->getList();
+        $user = $this->userHandler->getCurrentUser();
         $temperature = $this->returnUserEnterprise($user)->temperature;
         $data = $this->returnUserEnterprise($user)->restrictionPeriod;
         $users = $this->identifiedCaseRepository->getNewIdentifiedCase($data, $temperature);
@@ -168,16 +168,16 @@ class IdentifiedCaseHandler
         return $enterpriseDTO;
     }
 
-    public function getReturnAttempt(): array
+    public function getRecentReturnAttempts(): array
     {
-        $user = $this->userHandler->getList();
+        $user = $this->userHandler->getCurrentUser();
         $temperature = $this->returnUserEnterprise($user)->temperature;
         $data = $this->returnUserEnterprise($user)->restrictionPeriod;
         $users = $this->identifiedCaseRepository->getNewIdentifiedCase($data, $temperature);
         $arr = [];
         foreach ($users as $identifiedCase) {
             $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
-            $returnAttempt = $this->identifiedCaseRepository->getReturnAttempt(
+            $returnAttempt = $this->identifiedCaseRepository->getRecentReturnAttempts(
                 $identifiedCaseDTO->uuid,
                 $identifiedCaseDTO->firstDate
             );

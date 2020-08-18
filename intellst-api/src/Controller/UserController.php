@@ -22,9 +22,9 @@ class UserController
     /**
      * @Route("/api/user", name="user_Conected", methods={"Get"})
      */
-    public function listUser(): JsonResponse
+    public function getCurrentUser(): JsonResponse
     {
-        $list = $this->userHandler->getList();
+        $list = $this->userHandler->getCurrentUser();
 
         return new JsonResponse($list);
     }

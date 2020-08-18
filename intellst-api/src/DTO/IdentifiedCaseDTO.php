@@ -62,5 +62,4 @@ class IdentifiedCaseDTO
      * @Serializer\SerializedName("enterprise")
      */
     public $enterprise;
-
 }
