@@ -25,6 +25,14 @@ class IdentifiedCaseDTO
 
     /**
      * @Serializer\Expose()
+     * @Serializer\SerializedName("uuid")
+     * @Serializer\Type("string")
+     * @Assert\NotBlank
+     */
+    public string $uuid;
+
+    /**
+     * @Serializer\Expose()
      * @Serializer\SerializedName("temperature")
      * @Serializer\Type("float")
      * @Assert\NotBlank
@@ -44,4 +52,14 @@ class IdentifiedCaseDTO
      * @Serializer\SerializedName("firstDate")
      */
     public DateTime $firstDate;
+
+    /**
+     * Enterprise IdentifiedCase
+     * @var integer
+     * @Assert\NotNull
+     * @Serializer\Type("integer")
+     * @Serializer\Expose()
+     * @Serializer\SerializedName("enterprise")
+     */
+    public $enterprise;
 }

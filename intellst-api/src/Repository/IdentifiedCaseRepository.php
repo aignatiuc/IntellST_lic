@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\IdentifiedCase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -27,38 +28,67 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('IdentifiedCase')
             ->delete()
-            ->Where('IdentifiedCase.firstDate < :date')
+            ->where('IdentifiedCase.firstDate < :date')
             ->setParameter(':date', $date)
             ->getQuery()
             ->execute();
     }
 
-    // /**
-    //  * @return IdentifiedCase[] Returns an array of IdentifiedCase objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getNewIdentifiedCase(int $day, float $temperature)
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $date = new \DateTime();
+        $date->modify("-" . $day . " day");
 
-    /*
-    public function findOneBySomeField($value): ?IdentifiedCase
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.temperature > :temperature')
+            ->setParameter(':temperature', $temperature)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    public function getReturnAttempts(int $day, float $temperature, string $uuid): array
+    {
+        $date = new \DateTime();
+        $date->modify("-" . $day . " day");
+
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.temperature > :temperature')
+            ->setParameter(':temperature', $temperature)
+            ->andWhere('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getListOfReturnAttempts(string $uuid, $date): array
+    {
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function isEntranceAllowed(string $uuid): bool
+    {
+        $date = new \DateTime();
+        $date->modify('-1 day');
+
+        $result = $this->createQueryBuilder('IdentifiedCase')
+            ->where('IdentifiedCase.allowEntrance > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result === null;
+    }
 }

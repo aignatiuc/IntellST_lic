@@ -51,9 +51,15 @@ class Enterprise
      */
     private int $restrictionPeriod;
 
+    /**
+     * @ORM\OneToMany(targetEntity=IdentifiedCase::class, mappedBy="enterprise")
+     */
+    private $identifiedCases;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->identifiedCases = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,6 +130,37 @@ class Enterprise
     public function setRestrictionPeriod(int $restrictionPeriod): self
     {
         $this->restrictionPeriod = $restrictionPeriod;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IdentifiedCase[]
+     */
+    public function getIdentifiedCases(): Collection
+    {
+        return $this->identifiedCases;
+    }
+
+    public function addIdentifiedCase(IdentifiedCase $identifiedCase): self
+    {
+        if (!$this->identifiedCases->contains($identifiedCase)) {
+            $this->identifiedCases[] = $identifiedCase;
+            $identifiedCase->setEnterprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdentifiedCase(IdentifiedCase $identifiedCase): self
+    {
+        if ($this->identifiedCases->contains($identifiedCase)) {
+            $this->identifiedCases->removeElement($identifiedCase);
+            // set the owning side to null (unless already changed)
+            if ($identifiedCase->getEnterprise() === $this) {
+                $identifiedCase->setEnterprise(null);
+            }
+        }
 
         return $this;
     }

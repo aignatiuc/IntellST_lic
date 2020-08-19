@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\IdentifiedCaseDTO;
 use App\Entity\IdentifiedCase;
+use App\Repository\IdentifiedCaseRepository;
 use App\Services\IdentifiedCaseHandler;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -31,15 +32,21 @@ class IdentifiedCaseController extends AbstractController
      */
     private $validationErrorSerializer;
 
+    /**
+     * @var IdentifiedCaseRepository
+     */
+    private $identifiedCaseRepository;
+
     public function __construct(
         IdentifiedCaseHandler $identifiedCaseHandler,
         SerializerInterface $serializer,
-        ValidationErrorSerializer $validationErrorSerializer
-    )
-    {
+        ValidationErrorSerializer $validationErrorSerializer,
+        IdentifiedCaseRepository $identifiedCaseRepository
+    ) {
         $this->serializer = $serializer;
         $this->identifiedCaseHandler = $identifiedCaseHandler;
         $this->validationErrorSerializer = $validationErrorSerializer;
+        $this->identifiedCaseRepository = $identifiedCaseRepository;
     }
 
     /**
@@ -54,7 +61,6 @@ class IdentifiedCaseController extends AbstractController
             IdentifiedCaseDTO::class,
             'json'
         );
-
         $errors = $this->identifiedCaseHandler->updateIdentifiedCase($addIdentifiedCaseDTO);
         if ($errors->count()) {
             return new JsonResponse(
@@ -62,6 +68,20 @@ class IdentifiedCaseController extends AbstractController
                     'code' => Response::HTTP_BAD_REQUEST,
                     'message' => 'Bad Request',
                     'errors' => $this->validationErrorSerializer->serialize($errors),
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        $allowEntrance = $this->identifiedCaseHandler->isEntranceAllowed($addIdentifiedCaseDTO);
+        if ($allowEntrance === false) {
+            return new JsonResponse(['message' => 'Allow Entrance'], Response::HTTP_OK);
+        }
+        $returnAttempt = $this->identifiedCaseHandler->isReturnAttempt($addIdentifiedCaseDTO);
+        if ($returnAttempt === true) {
+            return new JsonResponse(
+                [
+                    'code' => Response::HTTP_BAD_REQUEST,
+                    'message' => 'This person does not have access',
                 ],
                 Response::HTTP_BAD_REQUEST
             );
@@ -81,19 +101,11 @@ class IdentifiedCaseController extends AbstractController
     }
 
     /**
-     * @Route("/api/identified-case/{identified-case}", name="edit_allow_entrance", methods={"POST"})
+     * @Route("/api/allow-entrance/{uuid}", name="edit_identified_case", methods={"POST"})
      */
-    public function editAllowEntrance(Request $request, IdentifiedCase $identifiedCase): JsonResponse
+    public function editAllowEntrance(IdentifiedCase $identifiedCase): JsonResponse
     {
-        $data = $request->getContent();
-
-        $editAllowEntrance = $this->serializer->deserialize(
-            $data,
-            IdentifiedCaseDTO::class,
-            'json'
-        );
-
-        $errors = $this->identifiedCaseHandler->updateIdentifiedCaseAllowEntrance($editAllowEntrance,$identifiedCase);
+        $errors = $this->identifiedCaseHandler->updateIdentifiedCaseAllowEntrance($identifiedCase);
         if ($errors->count()) {
             return new JsonResponse(
                 [
@@ -106,5 +118,25 @@ class IdentifiedCaseController extends AbstractController
         }
 
         return new JsonResponse(['message' => 'Entry allowed successfully'], Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/api/show-identified-case", name="show_list_new_identified_case", methods={"GET"})
+     */
+    public function getNewIdentifiedCase(): JsonResponse
+    {
+        $notification = $this->identifiedCaseHandler->getIdentifiedCases();
+
+        return new JsonResponse($notification);
+    }
+
+    /**
+     * @Route("/api/show-return-attempt", name="show_list_return_attempt", methods={"GET"})
+     */
+    public function getReturnAttempts(): JsonResponse
+    {
+        $returnAttempt = $this->identifiedCaseHandler->getRecentReturnAttempts();
+
+        return new JsonResponse($returnAttempt);
     }
 }
