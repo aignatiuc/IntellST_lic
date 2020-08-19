@@ -30,64 +30,197 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### List with endpoints 
 
-` http://intellst-back.local/api/entreprises/1 `  edit enterprise, method: Post
+
+* ` http://localhost/login_check ` **login  check, method: POST**
 
 data:
-{
-   temperature: float,
-   restrictionPeriod: integer
-}
-
-example {
-           "temperature": 38.0,
-           "restrictionPeriod": "14"
-        }
-
-` http://intellst-back.local/api/identified-case ` add identified case && show all identified cases,
-method: GET, POST
-
-data:
-{
-   name: string,
-   temperature: float
-}
-
-example: 
-{
-   "name": "/home/images",
-   "temperature": "41"
-}
- 
-` http://intellst-back.local/api/identified-case/1 ` edit allow entrance, method: POST
-
-` http://localhost/login_check ` login  check, method: POST
-
-data
+```
 {
     username: string, email,
     password: string
 }
+```
 
-example
+* ` http://localhost/api/user ` **show connected user, method: GET**
+
+data:
+```
+{
+   firstname: string,
+   lastname: string,
+   email: string,
+   enterprise: int
+}
+```
+
+example:
+```
+{
+    "id": 1,
+    "firstname": "admin",
+    "lastname": "admin",
+    "email": "admin@gmail.com",
+    "enterprise": 1
+}
+```   
+
+* ` http://intellst-back.local/api/entreprises/1 ` **edit enterprise, method: POST**
+
+data:
+```
+{
+   temperature: float,
+   restrictionPeriod: integer
+}
+```
+
+example: 
+```
+{
+   "temperature": 38.0,
+   "restrictionPeriod": "14"
+}
+```
+
+* ` http://intellst-back.local/api/identified-case ` **add identified case, method: POST**
+
+data:
+```
+{
+   name: string,
+   temperature: float,
+   uuid: string,
+   enterprise: int,
+}
+```
+
+example:
+```
+{
+   "photoFilename": "/home/images",
+   "temperature": "41",
+   "uuid": "bsfbveg3r23f",
+   "enterprise": 2
+}
+```
+
+* ` http://intellst-back.local/api/identified-case ` **show all identified cases,method: GET**
+
+data:
+```
+{
+   name: string,
+   uuid: string,
+   temperature: float,
+   datePhoto: DataTime,
+   firstDate: DataTime,
+   enterprise: int   
+}
+```
+
+example: 
+```
+{
+        "id": 119,
+        "photoFilename": "/home/images/",
+        "uuid": "cvbnmuio8yghnm",
+        "temperature": 39,
+        "datePhoto": {
+            "date": "2020-08-19 10:37:27.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+        },
+        "firstDate": {
+            "date": "2020-08-19 10:37:27.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+        },
+        "enterprise": "Pentalog"
+}
+```
+
+example:
+```
 {
     "username":"user@gmail.com",
     "password":"user"
 }
 
-` http://intellst-back.local/api/user ` show user info, method: GET
+```
 
-data
-{
-    id: integer,
-    firstname: string, 
-    lastname: string,
-    email: string, email
-}
+* ` http://localhost/api/allow-entrance/{uuid} ` **edit allow entrance, method: POST**
 
-example
-{
-    "id": 1,
-    "firstname": "Admin",
-    "lastname": "Admin",
-    "email":"admin@gmail.com"
+example:
+
+` http://localhost/api/allow-entrance/bsfbveg3r23f `
+
+* ` http://localhost/api/show-identified-case ` **show new identified case, method: GET**
+
+data:
+```{
+   name: string,
+   uuid: string,
+   temperature: float,
+   datePhoto: DataTime,
+   firstDate: DataTime,
+   enterprise: int
 }
+```
+
+example:
+```
+{
+   {
+        "id": 118,
+        "photoFilename": "/home/images/",
+        "uuid": "cvbnmuio8yghnm",
+        "temperature": 39,
+        "datePhoto": {
+            "date": "2020-08-19 09:46:43.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+        },
+        "firstDate": {
+            "date": "2020-08-19 09:46:43.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+        },
+        "enterprise": "Pentalog"
+    }
+}
+```
+
+* ` http://localhost/api/show-return-attempt ` **show returned attempts, method: GET**
+
+data:
+``` {
+   name: string,
+   uuid: string,
+   temperature: float,
+   datePhoto: DataTime,
+   firstDate: DataTime,
+   enterprise: int
+} 
+```
+example:
+```
+{
+   {
+        "id": 118,
+        "photoFilename": "/home/images/",
+        "uuid": "cvbnmuio8yghnm",
+        "temperature": 39,
+        "datePhoto": {
+            "date": "2020-08-19 09:46:43.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+        },
+        "firstDate": {
+            "date": "2020-08-19 09:46:43.000000",
+            "timezone_type": 3,
+            "timezone": "UTC"
+        },
+        "enterprise": "Pentalog"
+    }
+}
+```
