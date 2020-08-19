@@ -18,13 +18,19 @@ class IdentifiedCase
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private ?int $id=null;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
     private string $photoFilename;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank
+     */
+    private string $uuid;
 
     /**
      * @ORM\Column(type="float")
@@ -47,6 +53,12 @@ class IdentifiedCase
      */
     private DateTime $allowEntrance;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Enterprise::class)
+     * @ORM\JoinColumn(name="enterprise_id", referencedColumnName="id", nullable=false)
+     */
+    private $enterprise;
+
 
     public function __construct()
     {
@@ -68,6 +80,18 @@ class IdentifiedCase
     public function setPhotoFilename(string $photoFilename): self
     {
         $this->photoFilename = $photoFilename;
+
+        return $this;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }
@@ -112,5 +136,17 @@ class IdentifiedCase
     public function setAllowEntrance(DateTimeInterface $allowEntrance): void
     {
         $this->allowEntrance = $allowEntrance;
+    }
+
+    public function getEnterprise(): ?Enterprise
+    {
+        return $this->enterprise;
+    }
+
+    public function setEnterprise(?Enterprise $enterprise): self
+    {
+        $this->enterprise = $enterprise;
+
+        return $this;
     }
 }

@@ -46,7 +46,6 @@ class EnterpriseHandler
 
     public function updateEnterprise(EnterpriseDTO $dto, Enterprise $enterprise): ConstraintViolationListInterface
     {
-
         $enterprise = $this->transformer->transformDTOToEntity($dto, $enterprise);
 
         $errors = $this->validator->validate($enterprise);
