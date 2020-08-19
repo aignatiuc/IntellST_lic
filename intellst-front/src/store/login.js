@@ -64,7 +64,7 @@ const login = {
     getUserInfo({ commit }) {
       Axios.get("/api/user")
         .then(({ data }) => {
-          commit("setUser", { ...data[0] });
+          commit("setUser", { ...data });
         })
         .catch(() => {
           // localStorage.removeItem("token");
