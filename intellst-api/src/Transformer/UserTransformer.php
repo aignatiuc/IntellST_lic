@@ -15,6 +15,7 @@ class UserTransformer
         $userDTO->lastname = $user->getLastname();
         $userDTO->email = $user->getEmail();
         $userDTO->enterprise = $user->getEnterprise()->getId();
+
         return $userDTO;
     }
 }

@@ -72,11 +72,11 @@ class IdentifiedCaseController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
-        $allowEntrance = $this->identifiedCaseHandler->entranceAllowed($addIdentifiedCaseDTO);
-        if ($allowEntrance === true) {
+        $allowEntrance = $this->identifiedCaseHandler->isEntranceAllowed($addIdentifiedCaseDTO);
+        if ($allowEntrance === false) {
             return new JsonResponse(['message' => 'Allow Entrance'], Response::HTTP_OK);
         }
-        $returnAttempt = $this->identifiedCaseHandler->getReturnAttempts($addIdentifiedCaseDTO);
+        $returnAttempt = $this->identifiedCaseHandler->isReturnAttempt($addIdentifiedCaseDTO);
         if ($returnAttempt === true) {
             return new JsonResponse(
                 [
@@ -125,7 +125,7 @@ class IdentifiedCaseController extends AbstractController
      */
     public function getNewIdentifiedCase(): JsonResponse
     {
-        $notification = $this->identifiedCaseHandler->getIdentifiedCase();
+        $notification = $this->identifiedCaseHandler->getIdentifiedCases();
 
         return new JsonResponse($notification);
     }

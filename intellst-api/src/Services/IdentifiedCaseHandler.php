@@ -51,7 +51,6 @@ class IdentifiedCaseHandler
         $this->em = $em;
         $this->validator = $validator;
         $this->identifiedCaseTransformer = $identifiedCaseTransformer;
-        $this->identifiedCaseRepository = $identifiedCaseRepository;
         $this->identifiedCaseRepository = $this->em->getRepository(IdentifiedCase::class);
         $this->enterpriseRepository = $this->em->getRepository(Enterprise::class);
         $this->enterpriseTransformer = $enterpriseTransformer;
@@ -103,14 +102,15 @@ class IdentifiedCaseHandler
         return $errors;
     }
 
-    public function getIdentifiedCase(): array
+    public function getIdentifiedCases(): array
     {
         $user = $this->userHandler->getCurrentUser();
-        $temperature = $this->returnUserEnterprise($user)->temperature;
-        $data = $this->returnUserEnterprise($user)->restrictionPeriod;
-        $users = $this->identifiedCaseRepository->getNewIdentifiedCase($data, $temperature);
+        $dto = $this->getEnterprise($user->enterprise);
+        $temperature = $dto->temperature;
+        $days = $dto->restrictionPeriod;
+        $cases = $this->identifiedCaseRepository->getNewIdentifiedCase($days, $temperature);
         $arr = [];
-        foreach ($users as $identifiedCase) {
+        foreach ($cases as $identifiedCase) {
             $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
             $arr[] = $identifiedCaseDTO;
         }
@@ -118,66 +118,39 @@ class IdentifiedCaseHandler
         return $arr;
     }
 
-    public function getReturnAttempts(IdentifiedCaseDTO $dto): bool
+    public function isReturnAttempt(IdentifiedCaseDTO $dto): bool
     {
-        $temperature = $this->getEnterprise($dto)->temperature;
-        $day = $this->getEnterprise($dto)->restrictionPeriod;
+        $enterpriseDTO = $this->getEnterprise($dto->enterprise);
+        $temperature = $enterpriseDTO->temperature;
+        $day = $enterpriseDTO->restrictionPeriod;
         $uuid = $dto->uuid;
         $list = $this->identifiedCaseRepository->getReturnAttempts($day, $temperature, $uuid);
-        $arr = [];
-        foreach ($list as $identifiedCase) {
-            $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
-            $arr[] = $identifiedCaseDTO;
-        }
-        if (!empty($arr)) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return !(empty($list));
     }
 
-    public function entranceAllowed(IdentifiedCaseDTO $dto): bool
+    public function isEntranceAllowed(IdentifiedCaseDTO $dto): bool
     {
-        $uuid = $dto->uuid;
-        $list = $this->identifiedCaseRepository->entranceAllowed($uuid);
-        $arr = [];
-        foreach ($list as $identifiedCase) {
-            $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
-            $arr[] = $identifiedCaseDTO;
-        }
-        if (!empty($arr)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->identifiedCaseRepository->isEntranceAllowed($dto->uuid);
     }
 
-    private function getEnterprise(IdentifiedCaseDTO $dto): EnterpriseDTO
+    private function getEnterprise(int $id): EnterpriseDTO
     {
-        $enterprise = $this->enterpriseRepository->find($dto->enterprise);
-        $enterpriseDTO = $this->enterpriseTransformer->transformEntityToDTO($enterprise);
+        $enterprise = $this->enterpriseRepository->find($id);
 
-        return $enterpriseDTO;
-    }
-
-    private function returnUserEnterprise(UserDTO $dto): EnterpriseDTO
-    {
-        $enterprise = $this->enterpriseRepository->find($dto->enterprise);
-        $enterpriseDTO = $this->enterpriseTransformer->transformEntityToDTO($enterprise);
-
-        return $enterpriseDTO;
+        return $this->enterpriseTransformer->transformEntityToDTO($enterprise);
     }
 
     public function getRecentReturnAttempts(): array
     {
         $user = $this->userHandler->getCurrentUser();
-        $temperature = $this->returnUserEnterprise($user)->temperature;
-        $data = $this->returnUserEnterprise($user)->restrictionPeriod;
-        $users = $this->identifiedCaseRepository->getNewIdentifiedCase($data, $temperature);
+        $temperature = $this->getEnterprise($user->enterprise)->temperature;
+        $days = $this->getEnterprise($user->enterprise)->restrictionPeriod;
+        $cases = $this->identifiedCaseRepository->getNewIdentifiedCase($days, $temperature);
         $arr = [];
-        foreach ($users as $identifiedCase) {
+        foreach ($cases as $identifiedCase) {
             $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
-            $returnAttempt = $this->identifiedCaseRepository->getRecentReturnAttempts(
+            $returnAttempt = $this->identifiedCaseRepository->getListOfReturnAttempts(
                 $identifiedCaseDTO->uuid,
                 $identifiedCaseDTO->firstDate
             );
@@ -188,6 +161,7 @@ class IdentifiedCaseHandler
                 }
             }
         }
+        
         return $arr;
     }
 }

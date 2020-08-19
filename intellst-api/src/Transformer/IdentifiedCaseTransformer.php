@@ -2,7 +2,6 @@
 
 namespace App\Transformer;
 
-use App\DTO\AllowEntranceDTO;
 use App\DTO\IdentifiedCaseDTO;
 use App\Entity\Enterprise;
 use App\Entity\IdentifiedCase;
@@ -10,10 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class IdentifiedCaseTransformer
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    private EntityManagerInterface $em;
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -28,11 +24,12 @@ class IdentifiedCaseTransformer
         $identifiedCase->setTemperature($dto->temperature);
         $identifiedCase->setDatePhoto(new \DateTime());
         $identifiedCase->setFirstDate(new \DateTime());
-        $data = new \DateTime();
-        $data->modify('-1 day');
-        $identifiedCase->setAllowEntrance($data);
+        $date = new \DateTime();
+        $date->modify('-1 day');
+        $identifiedCase->setAllowEntrance($date);
         $enterprise = $this->em->getRepository(Enterprise::class)->find($dto->enterprise);
         $identifiedCase->setEnterprise($enterprise);
+
         return $identifiedCase;
     }
 

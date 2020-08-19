@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\IdentifiedCase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -63,7 +64,7 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getRecentReturnAttempts(string $uuid, $date)
+    public function getListOfReturnAttempts(string $uuid, $date): array
     {
         return $this->createQueryBuilder('IdentifiedCase')
             ->where('IdentifiedCase.firstDate > :date')
@@ -74,17 +75,20 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function entranceAllowed(string $uuid): array
+    public function isEntranceAllowed(string $uuid): bool
     {
         $date = new \DateTime();
         $date->modify('-1 day');
 
-        return $this->createQueryBuilder('IdentifiedCase')
+        $result = $this->createQueryBuilder('IdentifiedCase')
             ->where('IdentifiedCase.allowEntrance > :date')
             ->setParameter(':date', $date)
             ->andWhere('IdentifiedCase.uuid = :uuid')
             ->setParameter(':uuid', $uuid)
+            ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
+
+        return $result === null;
     }
 }
