@@ -41,6 +41,14 @@ data:
 }
 ```
 
+example:
+```
+{
+    "username":"user@gmail.com",
+    "password":"user"
+}
+```
+
 * ` http://localhost/api/user ` **show connected user, method: GET**
 
 data:
@@ -136,14 +144,6 @@ example:
             "timezone": "UTC"
         },
         "enterprise": "Pentalog"
-}
-```
-
-example:
-```
-{
-    "username":"user@gmail.com",
-    "password":"user"
 }
 ```
 
