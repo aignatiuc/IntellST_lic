@@ -41,6 +41,14 @@ data:
 }
 ```
 
+example:
+```
+{
+    "username":"user@gmail.com",
+    "password":"user"
+}
+```
+
 * ` http://localhost/api/user ` **show connected user, method: GET**
 
 data:
@@ -137,15 +145,6 @@ example:
         },
         "enterprise": "Pentalog"
 }
-```
-
-example:
-```
-{
-    "username":"user@gmail.com",
-    "password":"user"
-}
-
 ```
 
 * ` http://localhost/api/allow-entrance/{uuid} ` **edit allow entrance, method: POST**
