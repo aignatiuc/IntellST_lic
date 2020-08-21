@@ -7,7 +7,7 @@
             <v-icon>mdi-account</v-icon>
           </v-btn>
         </v-avatar>
-        {{ userData.firstname }}
+        {{ userData && userData.firstname }}
       </v-chip>
     </template>
     <v-card>
@@ -18,9 +18,12 @@
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title class="text-capitalize">
-              {{ userData.firstname }} {{ userData.lastname }}
+              {{ userData && userData.firstname }}
+              {{ userData && userData.lastname }}
             </v-list-item-title>
-            <v-list-item-subtitle>{{ userData.email }}</v-list-item-subtitle>
+            <v-list-item-subtitle>{{
+              userData && userData.email
+            }}</v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-btn icon>
@@ -38,9 +41,7 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   mounted() {
-    this.$nextTick(() => {
-      this.getUserInfo();
-    });
+    this.getUserInfo();
   },
   computed: {
     ...mapState("login", ["userToken", "userData"]),

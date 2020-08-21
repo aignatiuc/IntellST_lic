@@ -104,9 +104,6 @@ export default {
     submit() {
       this.$refs.observer.validate();
       this.setSettings(this.entreprise);
-      setTimeout(() => {
-        this.status = 401;
-      }, 2000);
     },
   },
 };

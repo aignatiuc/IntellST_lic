@@ -1,10 +1,10 @@
-import Axios from "../api/axios.js";
+import { Axios } from "../api/axios.js";
 import router from "../router";
 
 const login = {
   namespaced: true,
   state: () => ({
-    userToken: null,
+    userToken: localStorage.getItem("token"),
     allData: null,
     status: null,
     error: null,
@@ -37,17 +37,17 @@ const login = {
   },
   actions: {
     signInAction({ commit, dispatch }, payload) {
-      Axios.post("login_check", {
-        username: payload.username,
-        password: payload.password,
-      })
+      Axios()
+        .post("login_check", {
+          username: payload.username,
+          password: payload.password,
+        })
         .then(({ data: { token } }) => {
           commit("setToken", token);
           commit("setStatus", "success");
-
           localStorage.setItem("token", token);
-
           router.push("/");
+
           dispatch(
             "snackbar/showSnack",
             {
@@ -62,25 +62,36 @@ const login = {
         });
     },
     getUserInfo({ commit }) {
-      Axios.get("/api/user")
+      Axios()
+        .get("/api/user")
         .then(({ data }) => {
           commit("setUser", { ...data });
         })
         .catch(() => {
-          // localStorage.removeItem("token");
-          // router.push("/login");
+          localStorage.removeItem("token");
+          router.push("/login");
         });
     },
-    setSettings({ commit }, payload) {
-      Axios.post("/api/entreprises/1", {
-        temperature: payload.temperature,
-        restrictionPeriod: payload.restrictionPeriod,
-      })
-        .then(({ data: { token } }) => {
-          commit("setToken", token);
+    setSettings(
+      { commit, state, dispatch },
+      { temperature, restrictionPeriod }
+    ) {
+      Axios()
+        .post(`/api/enterprises/${state.userData.enterprise}`, {
+          temperature,
+          restrictionPeriod,
+        })
+        .then(() => {
           commit("setStatus", "success");
 
-          localStorage.setItem("token", token);
+          dispatch(
+            "snackbar/showSnack",
+            {
+              message: "Enterprise successfully edited!",
+              type: "success",
+            },
+            { root: true }
+          );
         })
 
         .catch((e) => {
