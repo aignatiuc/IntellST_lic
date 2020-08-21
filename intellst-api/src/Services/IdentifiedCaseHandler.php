@@ -44,7 +44,6 @@ class IdentifiedCaseHandler
         EntityManagerInterface $em,
         ValidatorInterface $validator,
         IdentifiedCaseTransformer $identifiedCaseTransformer,
-        IdentifiedCaseRepository $identifiedCaseRepository,
         EnterpriseTransformer $enterpriseTransformer,
         UserHandler $userHandler
     ) {
@@ -120,11 +119,12 @@ class IdentifiedCaseHandler
 
     public function isReturnAttempt(IdentifiedCaseDTO $dto): bool
     {
-        $enterpriseDTO = $this->getEnterprise($dto->enterprise);
+        $user = $this->userHandler->getCurrentUser();
+        $enterpriseDTO = $this->getEnterprise($user->enterprise);
         $temperature = $enterpriseDTO->temperature;
-        $day = $enterpriseDTO->restrictionPeriod;
+        $days = $enterpriseDTO->restrictionPeriod;
         $uuid = $dto->uuid;
-        $list = $this->identifiedCaseRepository->getReturnAttempts($day, $temperature, $uuid);
+        $list = $this->identifiedCaseRepository->getReturnAttempts($days, $temperature, $uuid);
 
         return !(empty($list));
     }
@@ -144,8 +144,9 @@ class IdentifiedCaseHandler
     public function getRecentReturnAttempts(): array
     {
         $user = $this->userHandler->getCurrentUser();
-        $temperature = $this->getEnterprise($user->enterprise)->temperature;
-        $days = $this->getEnterprise($user->enterprise)->restrictionPeriod;
+        $enterpriseDTO = $this->getEnterprise($user->enterprise);
+        $temperature = $enterpriseDTO->temperature;
+        $days = $enterpriseDTO->restrictionPeriod;
         $cases = $this->identifiedCaseRepository->getNewIdentifiedCase($days, $temperature);
         $arr = [];
         foreach ($cases as $identifiedCase) {
@@ -161,7 +162,7 @@ class IdentifiedCaseHandler
                 }
             }
         }
-        
+
         return $arr;
     }
 }

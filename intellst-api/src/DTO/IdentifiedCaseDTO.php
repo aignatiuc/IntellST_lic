@@ -17,7 +17,7 @@ class IdentifiedCaseDTO
 
     /**
      * @Serializer\Expose()
-     * @Serializer\SerializedName("name")
+     * @Serializer\SerializedName("photoFilename")
      * @Serializer\Type("string")
      * @Assert\NotBlank
      */
@@ -52,14 +52,4 @@ class IdentifiedCaseDTO
      * @Serializer\SerializedName("firstDate")
      */
     public DateTime $firstDate;
-
-    /**
-     * Enterprise IdentifiedCase
-     * @var integer
-     * @Assert\NotNull
-     * @Serializer\Type("integer")
-     * @Serializer\Expose()
-     * @Serializer\SerializedName("enterprise")
-     */
-    public $enterprise;
 }

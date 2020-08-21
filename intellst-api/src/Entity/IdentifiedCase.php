@@ -53,13 +53,6 @@ class IdentifiedCase
      */
     private DateTime $allowEntrance;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Enterprise::class)
-     * @ORM\JoinColumn(name="enterprise_id", referencedColumnName="id", nullable=false)
-     */
-    private $enterprise;
-
-
     public function __construct()
     {
         $this->datePhoto = new DateTime();
@@ -136,17 +129,5 @@ class IdentifiedCase
     public function setAllowEntrance(DateTimeInterface $allowEntrance): void
     {
         $this->allowEntrance = $allowEntrance;
-    }
-
-    public function getEnterprise(): ?Enterprise
-    {
-        return $this->enterprise;
-    }
-
-    public function setEnterprise(?Enterprise $enterprise): self
-    {
-        $this->enterprise = $enterprise;
-
-        return $this;
     }
 }
