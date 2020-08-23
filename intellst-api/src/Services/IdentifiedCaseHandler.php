@@ -47,7 +47,8 @@ class IdentifiedCaseHandler
         IdentifiedCaseRepository $identifiedCaseRepository,
         EnterpriseTransformer $enterpriseTransformer,
         UserHandler $userHandler
-    ) {
+    )
+    {
         $this->em = $em;
         $this->validator = $validator;
         $this->identifiedCaseTransformer = $identifiedCaseTransformer;
@@ -161,7 +162,64 @@ class IdentifiedCaseHandler
                 }
             }
         }
-        
+
+        return $arr;
+    }
+
+    public function getNumberOfEntriesPerDay(): array
+    {
+        $arr = [];
+        $date = new \DateTime("midnight");
+
+        for ($day = 0; $day <= 6; $day++) {
+            $date->modify("-1 day");
+            $stringValue = $date->format('Y-m-d');
+            $sum = $this->identifiedCaseRepository->getNumberOfEntriesPerDay($day);
+            $arr[$stringValue] = (int)$sum[0][1];
+        }
+        return $arr;
+    }
+
+    public function getNumberOfValidEntriesPerDay(): array
+    {
+        $user = $this->userHandler->getCurrentUser();
+        $dto = $this->getEnterprise($user->enterprise);
+        $temperature = $dto->temperature;
+        $arr = [];
+        $date = new \DateTime("midnight");
+
+        for ($day = 0; $day <= 6; $day++) {
+            $date->modify("-1 day");
+            $stringValue = $date->format('Y-m-d');
+            $sum = $this->identifiedCaseRepository->getNumberOfValidEntriesPerDay($day, $temperature);
+            $arr[$stringValue] = (int)$sum[0][1];
+        }
+        return $arr;
+    }
+
+    public function getNumberOfReturnsOfBannedPeople(): array
+    {
+        $user = $this->userHandler->getCurrentUser();
+        $temperature = $this->getEnterprise($user->enterprise)->temperature;
+        $days = $this->getEnterprise($user->enterprise)->restrictionPeriod;
+        $arr = [];
+        $date = new \DateTime("midnight");
+        for ($day = 0; $day <= 6; $day++) {
+            $sum = 0;
+            $cases = $this->identifiedCaseRepository->getOldIdentifiedCase($days, $temperature, $day);
+            foreach ($cases as $identifiedCase) {
+                $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
+                $returnAttempt = $this->identifiedCaseRepository->getNumberOfReturnsOfBannedPeople(
+                    $identifiedCaseDTO->uuid,
+                    $day
+                );
+                $sum += (int)$returnAttempt[0][1];
+            }
+            $date->modify("-1 day");
+            $stringValue = $date->format('Y-m-d');
+            $arr [$stringValue] = $sum;
+        }
+
         return $arr;
     }
 }

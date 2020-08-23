@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\IdentifiedCase;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -90,5 +89,85 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
 
         return $result === null;
+    }
+
+    public function getNumberOfEntriesPerDay(int $day)
+    {
+        $date = new \DateTime("midnight");
+        $date->modify("-" . $day . " day");
+        $date1 = new \DateTime("midnight");
+        $date1->modify("-" . $day . " day");
+        $date1->modify('+1 day');
+
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->select('COUNT(DISTINCT IdentifiedCase.uuid)')
+            ->where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.firstDate < :date1')
+            ->setParameter(':date1', $date1)
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getNumberOfValidEntriesPerDay(int $day, float $temperature)
+    {
+        $date = new \DateTime("midnight");
+        $date->modify("-" . $day . " day");
+        $date1 = new \DateTime("midnight");
+        $date1->modify("-" . $day . " day");
+        $date1->modify('+1 day');
+
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->select('COUNT(DISTINCT IdentifiedCase.uuid)')
+            ->where('IdentifiedCase.firstDate > :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.firstDate < :date1')
+            ->setParameter(':date1', $date1)
+            ->andWhere('IdentifiedCase.temperature > :temperature')
+            ->setParameter(':temperature', $temperature)
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getOldIdentifiedCase(int $days, float $temperature, int $day)
+    {
+        $date = new \DateTime("midnight");
+        $date->modify("-" . $day . " day");
+        $date->modify('+1 day');
+        $lastDate = 1 + $day + $days;
+        $date1 = new \DateTime("midnight");
+        $date1->modify("-" . $lastDate . " day");
+
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->where('IdentifiedCase.firstDate > :date1')
+            ->setParameter(':date1', $date1)
+            ->andWhere('IdentifiedCase.firstDate < :date')
+            ->setParameter(':date', $date)
+            ->andWhere('IdentifiedCase.temperature > :temperature')
+            ->setParameter(':temperature', $temperature)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getNumberOfReturnsOfBannedPeople(string $uuid, int $day)
+    {
+        $date1 = new \DateTime("midnight");
+        $date1->modify("-" . $day . " day");
+        $date2 = new \DateTime("midnight");
+        $date2->modify("-" . $day . " day");
+        $date2->modify('+1 day');
+        return $this->createQueryBuilder('IdentifiedCase')
+            ->select('COUNT(DISTINCT IdentifiedCase.uuid)')
+            ->where('IdentifiedCase.uuid = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->andWhere('IdentifiedCase.firstDate > :date1')
+            ->setParameter(':date1', $date1)
+            ->andWhere('IdentifiedCase.firstDate < :date2')
+            ->setParameter(':date2', $date2)
+            ->distinct()
+            ->getQuery()
+            ->getResult();
     }
 }

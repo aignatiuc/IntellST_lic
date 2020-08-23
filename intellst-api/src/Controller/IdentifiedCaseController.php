@@ -42,7 +42,8 @@ class IdentifiedCaseController extends AbstractController
         SerializerInterface $serializer,
         ValidationErrorSerializer $validationErrorSerializer,
         IdentifiedCaseRepository $identifiedCaseRepository
-    ) {
+    )
+    {
         $this->serializer = $serializer;
         $this->identifiedCaseHandler = $identifiedCaseHandler;
         $this->validationErrorSerializer = $validationErrorSerializer;
@@ -138,5 +139,35 @@ class IdentifiedCaseController extends AbstractController
         $returnAttempt = $this->identifiedCaseHandler->getRecentReturnAttempts();
 
         return new JsonResponse($returnAttempt);
+    }
+
+    /**
+     * @Route("/api/get-number-of-entries-per-day", name="show_number_of_entries_per_day", methods={"GET"})
+     */
+    public function getNumberOfEntriesPerDay(): JsonResponse
+    {
+        $getNumberOfEntriesPerDay = $this->identifiedCaseHandler->getNumberOfEntriesPerDay();
+
+        return new JsonResponse($getNumberOfEntriesPerDay);
+    }
+
+    /**
+     * @Route("/api/get-number-of-valid-entries-per-day", name="show_number_of_valid_entries_per_day", methods={"GET"})
+     */
+    public function getNumberOfValidEntriesPerDay(): JsonResponse
+    {
+        $getNumberOfValidEntriesPerDay = $this->identifiedCaseHandler->getNumberOfValidEntriesPerDay();
+
+        return new JsonResponse($getNumberOfValidEntriesPerDay);
+    }
+
+    /**
+     * @Route("/api/get-number-of-returns-of-banned-people", name="get_number_of_returns_of_banned_people", methods={"GET"})
+     */
+    public function getNumberOfReturnsOfBannedPeople(): JsonResponse
+    {
+        $getNumberOfReturnsOfBannedPeople = $this->identifiedCaseHandler->getNumberOfReturnsOfBannedPeople();
+
+        return new JsonResponse($getNumberOfReturnsOfBannedPeople);
     }
 }
