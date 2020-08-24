@@ -6,7 +6,6 @@ use App\DTO\IdentifiedCaseDTO;
 use App\Entity\IdentifiedCase;
 use App\Repository\IdentifiedCaseRepository;
 use App\Services\IdentifiedCaseHandler;
-use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,21 +31,14 @@ class IdentifiedCaseController extends AbstractController
      */
     private $validationErrorSerializer;
 
-    /**
-     * @var IdentifiedCaseRepository
-     */
-    private $identifiedCaseRepository;
-
     public function __construct(
         IdentifiedCaseHandler $identifiedCaseHandler,
         SerializerInterface $serializer,
-        ValidationErrorSerializer $validationErrorSerializer,
-        IdentifiedCaseRepository $identifiedCaseRepository
+        ValidationErrorSerializer $validationErrorSerializer
     ) {
         $this->serializer = $serializer;
         $this->identifiedCaseHandler = $identifiedCaseHandler;
         $this->validationErrorSerializer = $validationErrorSerializer;
-        $this->identifiedCaseRepository = $identifiedCaseRepository;
     }
 
     /**
@@ -80,10 +72,10 @@ class IdentifiedCaseController extends AbstractController
         if ($returnAttempt === true) {
             return new JsonResponse(
                 [
-                    'code' => Response::HTTP_BAD_REQUEST,
+                    'code' => Response::HTTP_OK,
                     'message' => 'This person does not have access',
                 ],
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_OK
             );
         }
 
