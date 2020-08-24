@@ -6,7 +6,6 @@ use App\DTO\IdentifiedCaseDTO;
 use App\Entity\IdentifiedCase;
 use App\Repository\IdentifiedCaseRepository;
 use App\Services\IdentifiedCaseHandler;
-use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,22 +31,14 @@ class IdentifiedCaseController extends AbstractController
      */
     private $validationErrorSerializer;
 
-    /**
-     * @var IdentifiedCaseRepository
-     */
-    private $identifiedCaseRepository;
-
     public function __construct(
         IdentifiedCaseHandler $identifiedCaseHandler,
         SerializerInterface $serializer,
-        ValidationErrorSerializer $validationErrorSerializer,
-        IdentifiedCaseRepository $identifiedCaseRepository
-    )
-    {
+        ValidationErrorSerializer $validationErrorSerializer
+    ) {
         $this->serializer = $serializer;
         $this->identifiedCaseHandler = $identifiedCaseHandler;
         $this->validationErrorSerializer = $validationErrorSerializer;
-        $this->identifiedCaseRepository = $identifiedCaseRepository;
     }
 
     /**
@@ -81,10 +72,10 @@ class IdentifiedCaseController extends AbstractController
         if ($returnAttempt === true) {
             return new JsonResponse(
                 [
-                    'code' => Response::HTTP_BAD_REQUEST,
+                    'code' => Response::HTTP_OK,
                     'message' => 'This person does not have access',
                 ],
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_OK
             );
         }
 
@@ -146,9 +137,9 @@ class IdentifiedCaseController extends AbstractController
      */
     public function getNumberOfEntriesPerDay(): JsonResponse
     {
-        $getNumberOfEntriesPerDay = $this->identifiedCaseHandler->getNumberOfEntriesPerDay();
+        $numberOfEntriesPerDay = $this->identifiedCaseHandler->getNumberOfEntriesPerDay();
 
-        return new JsonResponse($getNumberOfEntriesPerDay);
+        return new JsonResponse($numberOfEntriesPerDay);
     }
 
     /**
@@ -156,9 +147,9 @@ class IdentifiedCaseController extends AbstractController
      */
     public function getNumberOfValidEntriesPerDay(): JsonResponse
     {
-        $getNumberOfValidEntriesPerDay = $this->identifiedCaseHandler->getNumberOfValidEntriesPerDay();
+        $numberOfValidEntriesPerDay = $this->identifiedCaseHandler->getNumberOfValidEntriesPerDay();
 
-        return new JsonResponse($getNumberOfValidEntriesPerDay);
+        return new JsonResponse($numberOfValidEntriesPerDay);
     }
 
     /**
@@ -166,8 +157,8 @@ class IdentifiedCaseController extends AbstractController
      */
     public function getNumberOfReturnsOfBannedPeople(): JsonResponse
     {
-        $getNumberOfReturnsOfBannedPeople = $this->identifiedCaseHandler->getNumberOfReturnsOfBannedPeople();
+        $numberOfReturnsOfBannedPeople = $this->identifiedCaseHandler->getNumberOfReturnsOfBannedPeople();
 
-        return new JsonResponse($getNumberOfReturnsOfBannedPeople);
+        return new JsonResponse($numberOfReturnsOfBannedPeople);
     }
 }

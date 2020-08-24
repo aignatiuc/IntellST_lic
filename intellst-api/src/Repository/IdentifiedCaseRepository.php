@@ -91,7 +91,7 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
         return $result === null;
     }
 
-    public function getNumberOfEntriesPerDay(int $day)
+    public function getNumberOfEntriesPerDay(int $day): int
     {
         $date = new \DateTime("midnight");
         $date->modify("-" . $day . " day");
@@ -107,10 +107,10 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->setParameter(':date1', $date1)
             ->distinct()
             ->getQuery()
-            ->getResult();
+            ->getSingleScalarResult();
     }
 
-    public function getNumberOfValidEntriesPerDay(int $day, float $temperature)
+    public function getNumberOfValidEntriesPerDay(int $day, float $temperature): int
     {
         $date = new \DateTime("midnight");
         $date->modify("-" . $day . " day");
@@ -128,10 +128,10 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->setParameter(':temperature', $temperature)
             ->distinct()
             ->getQuery()
-            ->getResult();
+            ->getSingleScalarResult();
     }
 
-    public function getOldIdentifiedCase(int $days, float $temperature, int $day)
+    public function getOldIdentifiedCase(int $days, float $temperature, int $day): array
     {
         $date = new \DateTime("midnight");
         $date->modify("-" . $day . " day");
@@ -151,13 +151,14 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getNumberOfReturnsOfBannedPeople(string $uuid, int $day)
+    public function getNumberOfReturnsOfBannedPeople(string $uuid, int $day): int
     {
         $date1 = new \DateTime("midnight");
         $date1->modify("-" . $day . " day");
         $date2 = new \DateTime("midnight");
         $date2->modify("-" . $day . " day");
         $date2->modify('+1 day');
+
         return $this->createQueryBuilder('IdentifiedCase')
             ->select('COUNT(DISTINCT IdentifiedCase.uuid)')
             ->where('IdentifiedCase.uuid = :uuid')
@@ -168,6 +169,6 @@ class IdentifiedCaseRepository extends ServiceEntityRepository
             ->setParameter(':date2', $date2)
             ->distinct()
             ->getQuery()
-            ->getResult();
+            ->getSingleScalarResult();
     }
 }

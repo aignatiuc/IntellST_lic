@@ -17,9 +17,14 @@ export default {
         ],
         datasets: [
           {
-            label: "Data",
+            label: this.$t("home.graph1"),
             backgroundColor: "#d01919",
-            data: [40, 39, 10, 40, 39, 80, 40],
+            data: [40, 39, 13, 40, 39, 80, 40],
+          },
+          {
+            label: this.$t("home.graph3"),
+            backgroundColor: "#fff",
+            data: [10, 40, 39, 80, 40, 23, 14],
           },
         ],
       },

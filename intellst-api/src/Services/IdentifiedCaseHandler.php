@@ -44,11 +44,9 @@ class IdentifiedCaseHandler
         EntityManagerInterface $em,
         ValidatorInterface $validator,
         IdentifiedCaseTransformer $identifiedCaseTransformer,
-        IdentifiedCaseRepository $identifiedCaseRepository,
         EnterpriseTransformer $enterpriseTransformer,
         UserHandler $userHandler
-    )
-    {
+    ) {
         $this->em = $em;
         $this->validator = $validator;
         $this->identifiedCaseTransformer = $identifiedCaseTransformer;
@@ -121,11 +119,12 @@ class IdentifiedCaseHandler
 
     public function isReturnAttempt(IdentifiedCaseDTO $dto): bool
     {
-        $enterpriseDTO = $this->getEnterprise($dto->enterprise);
+        $user = $this->userHandler->getCurrentUser();
+        $enterpriseDTO = $this->getEnterprise($user->enterprise);
         $temperature = $enterpriseDTO->temperature;
-        $day = $enterpriseDTO->restrictionPeriod;
+        $days = $enterpriseDTO->restrictionPeriod;
         $uuid = $dto->uuid;
-        $list = $this->identifiedCaseRepository->getReturnAttempts($day, $temperature, $uuid);
+        $list = $this->identifiedCaseRepository->getReturnAttempts($days, $temperature, $uuid);
 
         return !(empty($list));
     }
@@ -145,8 +144,9 @@ class IdentifiedCaseHandler
     public function getRecentReturnAttempts(): array
     {
         $user = $this->userHandler->getCurrentUser();
-        $temperature = $this->getEnterprise($user->enterprise)->temperature;
-        $days = $this->getEnterprise($user->enterprise)->restrictionPeriod;
+        $enterpriseDTO = $this->getEnterprise($user->enterprise);
+        $temperature = $enterpriseDTO->temperature;
+        $days = $enterpriseDTO->restrictionPeriod;
         $cases = $this->identifiedCaseRepository->getNewIdentifiedCase($days, $temperature);
         $arr = [];
         foreach ($cases as $identifiedCase) {
@@ -175,8 +175,9 @@ class IdentifiedCaseHandler
             $date->modify("-1 day");
             $stringValue = $date->format('Y-m-d');
             $sum = $this->identifiedCaseRepository->getNumberOfEntriesPerDay($day);
-            $arr[$stringValue] = (int)$sum[0][1];
+            $arr[$stringValue] = (int) $sum;
         }
+
         return $arr;
     }
 
@@ -192,18 +193,21 @@ class IdentifiedCaseHandler
             $date->modify("-1 day");
             $stringValue = $date->format('Y-m-d');
             $sum = $this->identifiedCaseRepository->getNumberOfValidEntriesPerDay($day, $temperature);
-            $arr[$stringValue] = (int)$sum[0][1];
+            $arr[$stringValue] = (int) $sum;
         }
+
         return $arr;
     }
 
     public function getNumberOfReturnsOfBannedPeople(): array
     {
         $user = $this->userHandler->getCurrentUser();
-        $temperature = $this->getEnterprise($user->enterprise)->temperature;
-        $days = $this->getEnterprise($user->enterprise)->restrictionPeriod;
+        $enterprise = $this->getEnterprise($user->enterprise);
+        $temperature = $enterprise->temperature;
+        $days = $enterprise->restrictionPeriod;
         $arr = [];
         $date = new \DateTime("midnight");
+
         for ($day = 0; $day <= 6; $day++) {
             $sum = 0;
             $cases = $this->identifiedCaseRepository->getOldIdentifiedCase($days, $temperature, $day);
@@ -213,7 +217,7 @@ class IdentifiedCaseHandler
                     $identifiedCaseDTO->uuid,
                     $day
                 );
-                $sum += (int)$returnAttempt[0][1];
+                $sum += (int) $returnAttempt;
             }
             $date->modify("-1 day");
             $stringValue = $date->format('Y-m-d');
