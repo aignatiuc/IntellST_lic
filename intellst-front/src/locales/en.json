@@ -7,7 +7,7 @@
   },
   "home": {
     "graph1": "Number of entries per day",
-    "graph2": "Number of people with fever",
+    "graph2": "Number of valid entries per day",
     "graph3": "Number of returns of banned people",
     "and": "and"
   },
