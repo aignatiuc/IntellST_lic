@@ -131,4 +131,34 @@ class IdentifiedCaseController extends AbstractController
 
         return new JsonResponse($returnAttempt);
     }
+
+    /**
+     * @Route("/api/get-number-of-entries-per-day", name="show_number_of_entries_per_day", methods={"GET"})
+     */
+    public function getNumberOfEntriesPerDay(): JsonResponse
+    {
+        $numberOfEntriesPerDay = $this->identifiedCaseHandler->getNumberOfEntriesPerDay();
+
+        return new JsonResponse($numberOfEntriesPerDay);
+    }
+
+    /**
+     * @Route("/api/get-number-of-valid-entries-per-day", name="show_number_of_valid_entries_per_day", methods={"GET"})
+     */
+    public function getNumberOfValidEntriesPerDay(): JsonResponse
+    {
+        $numberOfValidEntriesPerDay = $this->identifiedCaseHandler->getNumberOfValidEntriesPerDay();
+
+        return new JsonResponse($numberOfValidEntriesPerDay);
+    }
+
+    /**
+     * @Route("/api/get-number-of-returns-of-banned-people", name="get_number_of_returns_of_banned_people", methods={"GET"})
+     */
+    public function getNumberOfReturnsOfBannedPeople(): JsonResponse
+    {
+        $numberOfReturnsOfBannedPeople = $this->identifiedCaseHandler->getNumberOfReturnsOfBannedPeople();
+
+        return new JsonResponse($numberOfReturnsOfBannedPeople);
+    }
 }

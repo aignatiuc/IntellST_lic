@@ -165,4 +165,65 @@ class IdentifiedCaseHandler
 
         return $arr;
     }
+
+    public function getNumberOfEntriesPerDay(): array
+    {
+        $arr = [];
+        $date = new \DateTime("midnight");
+
+        for ($day = 0; $day <= 6; $day++) {
+            $date->modify("-1 day");
+            $stringValue = $date->format('Y-m-d');
+            $sum = $this->identifiedCaseRepository->getNumberOfEntriesPerDay($day);
+            $arr[$stringValue] = (int) $sum;
+        }
+
+        return $arr;
+    }
+
+    public function getNumberOfValidEntriesPerDay(): array
+    {
+        $user = $this->userHandler->getCurrentUser();
+        $dto = $this->getEnterprise($user->enterprise);
+        $temperature = $dto->temperature;
+        $arr = [];
+        $date = new \DateTime("midnight");
+
+        for ($day = 0; $day <= 6; $day++) {
+            $date->modify("-1 day");
+            $stringValue = $date->format('Y-m-d');
+            $sum = $this->identifiedCaseRepository->getNumberOfValidEntriesPerDay($day, $temperature);
+            $arr[$stringValue] = (int) $sum;
+        }
+
+        return $arr;
+    }
+
+    public function getNumberOfReturnsOfBannedPeople(): array
+    {
+        $user = $this->userHandler->getCurrentUser();
+        $enterprise = $this->getEnterprise($user->enterprise);
+        $temperature = $enterprise->temperature;
+        $days = $enterprise->restrictionPeriod;
+        $arr = [];
+        $date = new \DateTime("midnight");
+
+        for ($day = 0; $day <= 6; $day++) {
+            $sum = 0;
+            $cases = $this->identifiedCaseRepository->getOldIdentifiedCase($days, $temperature, $day);
+            foreach ($cases as $identifiedCase) {
+                $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
+                $returnAttempt = $this->identifiedCaseRepository->getNumberOfReturnsOfBannedPeople(
+                    $identifiedCaseDTO->uuid,
+                    $day
+                );
+                $sum += (int) $returnAttempt;
+            }
+            $date->modify("-1 day");
+            $stringValue = $date->format('Y-m-d');
+            $arr [$stringValue] = $sum;
+        }
+
+        return $arr;
+    }
 }
