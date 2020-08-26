@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\DTO\IdentifiedCaseDTO;
 use App\Entity\IdentifiedCase;
-use App\Repository\IdentifiedCaseRepository;
 use App\Services\IdentifiedCaseHandler;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -93,7 +92,7 @@ class IdentifiedCaseController extends AbstractController
     }
 
     /**
-     * @Route("/api/allow-entrance/{uuid}", name="edit_identified_case", methods={"POST"})
+     * @Route("/api/allow-entrance/{id}", name="edit_identified_case", methods={"POST"})
      */
     public function editAllowEntrance(IdentifiedCase $identifiedCase): JsonResponse
     {
