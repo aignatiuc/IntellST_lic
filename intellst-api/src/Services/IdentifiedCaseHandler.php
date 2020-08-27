@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-use App\DTO\AllowEntranceDTO;
 use App\DTO\EnterpriseDTO;
 use App\DTO\IdentifiedCaseDTO;
-use App\DTO\UserDTO;
 use App\Entity\Enterprise;
 use App\Entity\IdentifiedCase;
-use App\Entity\User;
 use App\Repository\EnterpriseRepository;
 use App\Repository\IdentifiedCaseRepository;
 use App\Transformer\EnterpriseTransformer;
@@ -77,9 +74,9 @@ class IdentifiedCaseHandler
 
     public function getList(): array
     {
-        $users = $this->identifiedCaseRepository->findAll();
+        $identifiedCases = $this->identifiedCaseRepository->findAll();
         $arr = [];
-        foreach ($users as $identifiedCase) {
+        foreach ($identifiedCases as $identifiedCase) {
             $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
             $arr[] = $identifiedCaseDTO;
         }
@@ -147,9 +144,9 @@ class IdentifiedCaseHandler
         $enterpriseDTO = $this->getEnterprise($user->enterprise);
         $temperature = $enterpriseDTO->temperature;
         $days = $enterpriseDTO->restrictionPeriod;
-        $cases = $this->identifiedCaseRepository->getNewIdentifiedCase($days, $temperature);
+        $identifiedCases = $this->identifiedCaseRepository->getNewIdentifiedCase($days, $temperature);
         $arr = [];
-        foreach ($cases as $identifiedCase) {
+        foreach ($identifiedCases as $identifiedCase) {
             $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
             $returnAttempt = $this->identifiedCaseRepository->getListOfReturnAttempts(
                 $identifiedCaseDTO->uuid,
@@ -175,7 +172,7 @@ class IdentifiedCaseHandler
             $date->modify("-1 day");
             $stringValue = $date->format('Y-m-d');
             $sum = $this->identifiedCaseRepository->getNumberOfEntriesPerDay($day);
-            $arr[$stringValue] = (int) $sum;
+            $arr[$stringValue] = $sum;
         }
 
         return $arr;
@@ -193,7 +190,7 @@ class IdentifiedCaseHandler
             $date->modify("-1 day");
             $stringValue = $date->format('Y-m-d');
             $sum = $this->identifiedCaseRepository->getNumberOfValidEntriesPerDay($day, $temperature);
-            $arr[$stringValue] = (int) $sum;
+            $arr[$stringValue] = $sum;
         }
 
         return $arr;
@@ -210,14 +207,14 @@ class IdentifiedCaseHandler
 
         for ($day = 0; $day <= 6; $day++) {
             $sum = 0;
-            $cases = $this->identifiedCaseRepository->getOldIdentifiedCase($days, $temperature, $day);
-            foreach ($cases as $identifiedCase) {
+            $identifiedCases = $this->identifiedCaseRepository->getOldIdentifiedCase($days, $temperature, $day);
+            foreach ($identifiedCases as $identifiedCase) {
                 $identifiedCaseDTO = $this->identifiedCaseTransformer->transformEntityToDTO($identifiedCase);
                 $returnAttempt = $this->identifiedCaseRepository->getNumberOfReturnsOfBannedPeople(
                     $identifiedCaseDTO->uuid,
                     $day
                 );
-                $sum += (int) $returnAttempt;
+                $sum += $returnAttempt;
             }
             $date->modify("-1 day");
             $stringValue = $date->format('Y-m-d');

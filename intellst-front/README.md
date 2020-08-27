@@ -56,8 +56,7 @@ data:
 {
    firstname: string,
    lastname: string,
-   email: string,
-   enterprise: int
+   email: string
 }
 ```
 
@@ -67,8 +66,7 @@ example:
     "id": 1,
     "firstname": "admin",
     "lastname": "admin",
-    "email": "admin@gmail.com",
-    "enterprise": 1
+    "email": "admin@gmail.com"
 }
 ```   
 
@@ -97,8 +95,7 @@ data:
 {
    name: string,
    temperature: float,
-   uuid: string,
-   enterprise: int,
+   uuid: string
 }
 ```
 
@@ -107,8 +104,7 @@ example:
 {
    "photoFilename": "/home/images",
    "temperature": "41",
-   "uuid": "bsfbveg3r23f",
-   "enterprise": 2
+   "uuid": "bsfbveg3r23f"
 }
 ```
 
@@ -121,8 +117,7 @@ data:
    uuid: string,
    temperature: float,
    datePhoto: DataTime,
-   firstDate: DataTime,
-   enterprise: int   
+   firstDate: DataTime  
 }
 ```
 
@@ -142,8 +137,7 @@ example:
             "date": "2020-08-19 10:37:27.000000",
             "timezone_type": 3,
             "timezone": "UTC"
-        },
-        "enterprise": "Pentalog"
+        }
 }
 ```
 
@@ -161,8 +155,7 @@ data:
    uuid: string,
    temperature: float,
    datePhoto: DataTime,
-   firstDate: DataTime,
-   enterprise: int
+   firstDate: DataTimet
 }
 ```
 
@@ -183,8 +176,7 @@ example:
             "date": "2020-08-19 09:46:43.000000",
             "timezone_type": 3,
             "timezone": "UTC"
-        },
-        "enterprise": "Pentalog"
+        }
     }
 }
 ```
@@ -197,8 +189,7 @@ data:
    uuid: string,
    temperature: float,
    datePhoto: DataTime,
-   firstDate: DataTime,
-   enterprise: int
+   firstDate: DataTime
 } 
 ```
 example:
@@ -218,8 +209,7 @@ example:
             "date": "2020-08-19 09:46:43.000000",
             "timezone_type": 3,
             "timezone": "UTC"
-        },
-        "enterprise": "Pentalog"
+        }
     }
 }
 ```
