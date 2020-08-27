@@ -21,7 +21,7 @@
 
         <div class="d-flex flex-column mb-6">
           <v-card class="pa-2" tile>
-            {{ $t("cases.popup.temperature") }} : 38 C
+            {{ $t("cases.popup.temperature") }} : 38 °С
           </v-card>
           <v-card class="pa-2" tile>
             {{ $t("cases.popup.date") }} : 5/10/2020

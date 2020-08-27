@@ -33,12 +33,13 @@
     "save": "Sauver"
   },
   "notifications": {
-    "new": "Nouvelles notifications",
-    "old": "Notifications plus anciennes",
+    "case": "Cas identifiés",
+    "attempt": "Tentatives de retour",
     "head": "Attention:",
-    "body1": "nouvelle tentative de retour",
-    "body2": "nouveau cas identifié",
-    "link": "Voir le cas"
+    "body1": "nouvelle tentative de retour avec fièvre",
+    "body2": "nouveau cas identifié avec fièvre",
+    "link": "Voir le cas",
+    "at": "à"
   },
   "faq": {
     "title1": "Questions fréquemment posées",

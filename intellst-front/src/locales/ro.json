@@ -33,12 +33,13 @@
     "save": "Salvați"
   },
   "notifications": {
-    "new": "Noi notificări",
-    "old": "Notifications mai vechi",
+    "case": "Сazuri identificate",
+    "attempt": "Tentative repetate de intrare",
     "head": "Atenție:",
-    "body1": "nouă încercare de întoarcere",
-    "body2": "caz nou identificat",
-    "link": "Vezi cazul"
+    "body1": "nouă încercare de întoarcere cu febra",
+    "body2": "caz nou identificat cu febra",
+    "link": "Vezi cazul",
+    "at": "la"
   },
   "faq": {
     "title1": "Întrebări frecvente",
