@@ -9,6 +9,7 @@ const login = {
     status: null,
     error: null,
     userData: null,
+    graphData: null,
   }),
   mutations: {
     setToken(state, payload) {
@@ -29,6 +30,9 @@ const login = {
 
     setUser(state, payload) {
       state.userData = payload;
+    },
+    setGraph(state, payload) {
+      state.graphData = payload;
     },
 
     removeUser(state) {
@@ -96,6 +100,27 @@ const login = {
 
         .catch((e) => {
           commit("setError", e);
+        });
+    },
+    async graphEntries({ commit }) {
+      await Axios()
+        .get("/api/get-number-of-entries-per-day")
+        .then(({ data }) => {
+          commit("setGraph", { ...data });
+        });
+    },
+    async graphValid({ commit }) {
+      await Axios()
+        .get("/api/get-number-of-valid-entries-per-day")
+        .then(({ data }) => {
+          commit("setGraph", { ...data });
+        });
+    },
+    async graphBanned({ commit }) {
+      await Axios()
+        .get("/api/get-number-of-returns-of-banned-people")
+        .then(({ data }) => {
+          commit("setGraph", { ...data });
         });
     },
   },

@@ -7,7 +7,7 @@
   },
   "home": {
     "graph1": "Nombre d'entrées par jour",
-    "graph2": "Nombre de personnes souffrant de fièvre",
+    "graph2": "Nombre d'entrées valides par jour",
     "graph3": "Nombre de retours de personnes interdites",
     "and": "et"
   },

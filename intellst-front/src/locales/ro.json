@@ -7,7 +7,7 @@
   },
   "home": {
     "graph1": "Numărul de intrări pe zi",
-    "graph2": "Numărul de persoane cu febră",
+    "graph2": "Numărul de intrări valabile pe zi",
     "graph3": "Numărul de returnări a persoanelor interzise",
     "and": "și"
   },
