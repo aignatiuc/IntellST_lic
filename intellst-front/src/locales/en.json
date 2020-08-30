@@ -17,6 +17,7 @@
     "popup": {
       "title": "Person information",
       "temperature": "Temperature",
+      "face": "Person was identified",
       "date": "First time fever identified",
       "return": "Return attempt",
       "instructions": "See Instructions",

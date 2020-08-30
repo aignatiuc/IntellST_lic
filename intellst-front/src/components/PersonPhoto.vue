@@ -1,18 +1,28 @@
 <template>
   <v-row>
-    <v-col cols="1" sm="3" v-for="(item, i) in 4" :key="i">
+    <v-col cols="1" sm="3" v-for="(post, index) in casesData" :key="index">
       <v-img
-        @click="dialog = !dialog"
-        src="https://cdn.vuetifyjs.com/images/john.png"
+        @click="
+          setDescription(post);
+          dialog = !dialog;
+        "
+        :src="require('@/assets/person.png')"
       />
     </v-col>
-    <v-dialog :value="dialog" v-model="dialog" width="500">
+
+    <v-dialog
+      id="item-description"
+      :value="dialog"
+      v-model="dialog"
+      width="500"
+    >
       <v-card>
         <v-toolbar
           class="headline grey lighten-5 lighten-1 gradient"
           primary-title
         >
           {{ $t("cases.popup.title") }}
+
           <v-spacer></v-spacer>
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
@@ -21,14 +31,17 @@
 
         <div class="d-flex flex-column mb-6">
           <v-card class="pa-2" tile>
-            {{ $t("cases.popup.temperature") }} : 38 °С
+            {{ $t("cases.popup.temperature") }} : {{ currentTemperature }}°С
           </v-card>
           <v-card class="pa-2" tile>
-            {{ $t("cases.popup.date") }} : 5/10/2020
+            {{ $t("cases.popup.face") }} : {{ currentPhoto }}
           </v-card>
           <v-card class="pa-2" tile>
+            {{ $t("cases.popup.date") }} : {{ currentDate }}
+          </v-card>
+          <!-- <v-card class="pa-2" tile>
             {{ $t("cases.popup.return") }} : 5/20/2020
-          </v-card>
+          </v-card> -->
         </div>
         <v-card-actions class="justify-center">
           <button>
@@ -52,9 +65,29 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data: () => ({
     dialog: false,
+    currentId: null,
+    currentTemperature: null,
+    currentPhoto: null,
+    currentDate: null,
   }),
+  mounted() {
+    this.identifiedCases();
+  },
+  methods: {
+    ...mapActions("login", ["identifiedCases"]),
+    setDescription(item) {
+      this.currentTemperature = item.temperature;
+      this.currentPhoto = item.datePhoto.date.substring(0, 19);
+      this.currentDate = item.firstDate.date.substring(0, 19);
+    },
+  },
+  computed: {
+    ...mapState("login", ["userToken", "casesData"]),
+  },
 };
 </script>

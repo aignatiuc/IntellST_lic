@@ -10,7 +10,7 @@
           <span>{{ $t("notifications.head") }}</span>
           {{ $t("notifications.body2") }} {{ item.temperature }}°С
           {{ $t("notifications.at") }}
-          {{ item.firstDate.date }}
+          {{ item.firstDate.date.substring(0, 19) }}
           <button>
             <router-link to="/cases">{{
               $t("notifications.link")
@@ -26,7 +26,7 @@
           <span>{{ $t("notifications.head") }}</span>
           {{ $t("notifications.body1") }} {{ item.temperature }}°С
           {{ $t("notifications.at") }}
-          {{ item.firstDate.date }}
+          {{ item.firstDate.date.substring(0, 19) }}
           <button>
             <router-link to="/cases">{{
               $t("notifications.link")

@@ -17,6 +17,7 @@
     "popup": {
       "title": "Informations sur la personne",
       "temperature": "Température",
+      "face": "La personne a été identifiée",
       "date": "Première fièvre détectée",
       "return": "Tentative de retour",
       "instructions": "Voir instructions",

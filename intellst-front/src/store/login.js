@@ -12,6 +12,7 @@ const login = {
     graphData: null,
     notificationsData: null,
     attemptsData: null,
+    casesData: null,
   }),
   mutations: {
     setToken(state, payload) {
@@ -41,6 +42,9 @@ const login = {
     },
     setAttempts(state, payload) {
       state.attemptsData = payload;
+    },
+    setCases(state, payload) {
+      state.casesData = payload;
     },
 
     removeUser(state) {
@@ -143,6 +147,13 @@ const login = {
         .get(`/api/show-return-attempt`)
         .then(({ data }) => {
           commit("setAttempts", { ...data });
+        });
+    },
+    async identifiedCases({ commit }) {
+      await Axios()
+        .get(`/api/identified-case`)
+        .then(({ data }) => {
+          commit("setCases", { ...data });
         });
     },
   },
