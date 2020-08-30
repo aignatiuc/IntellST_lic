@@ -66,7 +66,8 @@ example:
     "id": 1,
     "firstname": "admin",
     "lastname": "admin",
-    "email": "admin@gmail.com"
+    "email": "admin@gmail.com",
+    "enterprise": 1
 }
 ```   
 

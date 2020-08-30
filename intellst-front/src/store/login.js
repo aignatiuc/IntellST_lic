@@ -156,6 +156,26 @@ const login = {
           commit("setCases", { ...data });
         });
     },
+    allowEntrance({ commit, dispatch }, { id }) {
+      Axios()
+        .post(`/api/allow-entrance/${id}`)
+        .then(() => {
+          commit("setStatus", "success");
+
+          dispatch(
+            "snackbar/showSnack",
+            {
+              message: "Entrance successfully allowed!",
+              type: "success",
+            },
+            { root: true }
+          );
+        })
+
+        .catch((e) => {
+          commit("setError", e);
+        });
+    },
   },
 
   getters: {

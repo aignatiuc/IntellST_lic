@@ -39,9 +39,6 @@
           <v-card class="pa-2" tile>
             {{ $t("cases.popup.date") }} : {{ currentDate }}
           </v-card>
-          <!-- <v-card class="pa-2" tile>
-            {{ $t("cases.popup.return") }} : 5/20/2020
-          </v-card> -->
         </div>
         <v-card-actions class="justify-center">
           <button>
@@ -53,7 +50,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <div class="my-2">
-            <v-btn @click="dialog = false" depressed small color="error">
+            <v-btn @click="submit()" depressed small color="error">
               <v-icon dark left>mdi-arrow-left</v-icon
               >{{ $t("cases.popup.allow") }}
             </v-btn>
@@ -68,22 +65,29 @@
 import { mapState, mapActions } from "vuex";
 
 export default {
-  data: () => ({
-    dialog: false,
-    currentId: null,
-    currentTemperature: null,
-    currentPhoto: null,
-    currentDate: null,
-  }),
+  data() {
+    return {
+      dialog: false,
+      currentId: null,
+      currentTemperature: null,
+      currentPhoto: null,
+      currentDate: null,
+    };
+  },
   mounted() {
     this.identifiedCases();
   },
   methods: {
     ...mapActions("login", ["identifiedCases"]),
     setDescription(item) {
+      this.currentId = item.id;
       this.currentTemperature = item.temperature;
       this.currentPhoto = item.datePhoto.date.substring(0, 19);
       this.currentDate = item.firstDate.date.substring(0, 19);
+    },
+    ...mapActions("login", ["allowEntrance"]),
+    submit() {
+      this.allowEntrance({ id: this.currentId });
     },
   },
   computed: {
