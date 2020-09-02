@@ -17,6 +17,7 @@
     "popup": {
       "title": "Person information",
       "temperature": "Temperature",
+      "face": "Person was identified",
       "date": "First time fever identified",
       "return": "Return attempt",
       "instructions": "See Instructions",
@@ -33,12 +34,13 @@
     "save": "Save"
   },
   "notifications": {
-    "new": "New notifications",
-    "old": "Older notifications",
+    "case": "Identified cases",
+    "attempt": "Return attemps",
     "head": "Attention:",
-    "body1": "new return attempt",
-    "body2": "new case identified",
-    "link": "See the case"
+    "body1": "new return attempt with fever",
+    "body2": "new case identified with fever",
+    "link": "See the case",
+    "at": "at"
   },
   "faq": {
     "title1": "Frequently asked questions",
