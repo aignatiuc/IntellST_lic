@@ -4,76 +4,50 @@ namespace App\Tests\Services;
 
 use App\DTO\AllowEntranceDTO;
 use App\DTO\IdentifiedCaseDTO;
-use App\Entity\Enterprise;
 use App\Entity\IdentifiedCase;
 use App\Entity\User;
-use App\Repository\IdentifiedCaseRepository;
 use App\Services\IdentifiedCaseHandler;
 use App\Services\UserHandler;
 use App\Transformer\EnterpriseTransformer;
 use App\Transformer\IdentifiedCaseTransformer;
+use App\Transformer\UserTransformer;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Validator\Validation;
 
 class IdentifiedCaseHandlerTest extends TestCase
 {
     private function getHandler(): IdentifiedCaseHandler
     {
-        $identifiedCaseRepositoryMock = $this->createMock(ObjectRepository::class);
-        $identifiedCaseRepositoryMock
-            ->method('find')
-            ->willReturnMap(
-                [
-                    [1, new IdentifiedCase()],
-                    [2, null],
-                ]
-            );
-
-        $enterpriseTransformerMock = $this->createMock(ObjectRepository::class);
-        $enterpriseTransformerMock
-            ->method('find')
-            ->willReturnMap(
-                [
-                    [1,new Enterprise()],
-                    [2, null],
-                ]
-            );
-
-        $userHandlerMock = $this->createMock(ObjectRepository::class);
-        $userHandlerMock
-            ->method('find')
-            ->willReturnMap(
-                [
-                    [1, new User()],
-                    [2, null],
-                ]
-            );
-
+        $repositoryMock = $this->createMock(ObjectRepository::class);
         $emMock = $this->createMock(EntityManagerInterface::class);
         $emMock
             ->method('getRepository')
-            ->willReturnMap(
-                [
-                    [IdentifiedCase::class, $identifiedCaseRepositoryMock],
-                    [Enterprise::class, $enterpriseTransformerMock],
-                    [User::class, $userHandlerMock],
-                ]
-            );
+            ->willReturn($repositoryMock);
 
         $transformer = new IdentifiedCaseTransformer($emMock);
         $validator = Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
+
         $enterpriseTransformer = new EnterpriseTransformer();
-        $userHandler = new UserHandler($emMock, $transformer);
+        $userTransformer = new UserTransformer();
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->method('getUser')->willReturn(new User());
+        $tokenStorageMock = $this->createMock(TokenStorageInterface::class);
+        $tokenStorageMock->method('getToken')->willReturn($tokenMock);
+
+        $userHandler = new UserHandler($emMock, $userTransformer, $tokenStorageMock);
 
         return new IdentifiedCaseHandler(
             $emMock,
             $validator,
             $transformer,
             $enterpriseTransformer,
-            $userHandler);
+            $userHandler
+        );
     }
 
 
@@ -85,7 +59,6 @@ class IdentifiedCaseHandlerTest extends TestCase
         $dto->temperature = 39;
         $dto->datePhoto = new DateTime('2020-01-01T15:03:01.012345Z');
         $dto->firstDate = new DateTime('2020-01-01T15:03:01.012345Z');
-        $dto->enterprise = 2;
 
         return $dto;
     }
@@ -124,6 +97,7 @@ class IdentifiedCaseHandlerTest extends TestCase
     {
         $identifiedCase = new IdentifiedCase();
         $identifiedCase->setPhotoFilename('/homme/');
+        $identifiedCase->setUuid('jafasfrt5etgrvgdg');
         $identifiedCase->setTemperature(39);
         $identifiedCase->setDatePhoto(new DateTime());
         $identifiedCase->setFirstDate(new DateTime());
@@ -131,7 +105,7 @@ class IdentifiedCaseHandlerTest extends TestCase
         $handler = $this->getHandler();
         $dto = $this->getAllowEntranceDTO();
 
-        $result = $handler->updateIdentifiedCaseAllowEntrance($dto, $identifiedCase);
+        $result = $handler->updateIdentifiedCaseAllowEntrance($identifiedCase);
 
         $this->assertCount(0, $result);
     }
@@ -140,12 +114,14 @@ class IdentifiedCaseHandlerTest extends TestCase
     {
         $identifiedCase1 = new IdentifiedCase();
         $identifiedCase1->setPhotoFilename('/home/images/');
+        $identifiedCase1->setUuid('jafasfrtetgrvgdg');
         $identifiedCase1->setTemperature(39);
         $identifiedCase1->setFirstDate(new DateTime('2020-01-01T15:03:01.012345Z'));
         $identifiedCase1->setDatePhoto(new DateTime('2020-01-01T15:03:01.012345Z'));
 
         $identifiedCase2 = new IdentifiedCase();
         $identifiedCase2->setPhotoFilename('/home/images/');
+        $identifiedCase1->setUuid('jafasfrtetgrvgdg');
         $identifiedCase2->setTemperature(39);
         $identifiedCase2->setFirstDate(new DateTime('2020-01-01T15:03:01.012345Z'));
         $identifiedCase2->setDatePhoto(new DateTime('2020-01-01T15:03:01.012345Z'));
@@ -159,19 +135,29 @@ class IdentifiedCaseHandlerTest extends TestCase
             ->method('getRepository')
             ->willReturn($repositoryMock);
 
-        $transformer = new IdentifiedCaseTransformer();
+        $transformer = new IdentifiedCaseTransformer($emMock);
         $validator = Validation::createValidatorBuilder()->enableAnnotationMapping()->getValidator();
+        $enterpriseTransformer = new EnterpriseTransformer();
+        $userTransformer = new UserTransformer();
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->method('getUser')->willReturn(new User());
+        $tokenStorageMock = $this->createMock(TokenStorageInterface::class);
+        $tokenStorageMock->method('getToken')->willReturn($tokenMock);
+        $userHandler = new UserHandler($emMock, $userTransformer, $tokenStorageMock);
 
         $handler = new IdentifiedCaseHandler(
             $emMock,
             $validator,
-            $transformer
+            $transformer,
+            $enterpriseTransformer,
+            $userHandler
         );
 
         $result = $handler->getList();
 
         $dto1 = new IdentifiedCaseDTO();
         $dto1->photoFilename = '/home/images/';
+        $dto1->uuid = 'jafasfrtetgrvgdg';
         $dto1->temperature = 39;
         $dto1->firstDate = new DateTime('2020-01-01T15:03:01.012345Z');
         $dto1->datePhoto = new DateTime('2020-01-01T15:03:01.012345Z');
@@ -179,6 +165,7 @@ class IdentifiedCaseHandlerTest extends TestCase
 
         $dto2 = new IdentifiedCaseDTO();
         $dto2->photoFilename = '/home/images/';
+        $dto2->uuid = 'jafasfrtetgrvgdg';
         $dto2->temperature = 39;
         $dto2->firstDate = new DateTime('2020-01-01T15:03:01.012345Z');
         $dto2->datePhoto = new DateTime('2020-01-01T15:03:01.012345Z');

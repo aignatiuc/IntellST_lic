@@ -142,7 +142,7 @@ example:
 }
 ```
 
-* ` http://localhost/api/allow-entrance/{uuid} ` **edit allow entrance, method: POST**
+* ` http://localhost/api/allow-entrance/{id} ` **edit allow entrance, method: POST**
 
 example:
 
@@ -156,7 +156,7 @@ data:
    uuid: string,
    temperature: float,
    datePhoto: DataTime,
-   firstDate: DataTimet
+   firstDate: DataTime
 }
 ```
 
