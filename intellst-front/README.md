@@ -56,8 +56,7 @@ data:
 {
    firstname: string,
    lastname: string,
-   email: string,
-   enterprise: int
+   email: string
 }
 ```
 
@@ -147,7 +146,7 @@ example:
 
 example:
 
-` http://localhost/api/allow-entrance/54 `
+` http://localhost/api/allow-entrance/bsfbveg3r23f `
 
 * ` http://localhost/api/show-identified-case ` **show new identified case, method: GET**
 
@@ -214,4 +213,46 @@ example:
         }
     }
 }
+```
+
+* ` http://intellst-back.local/api/get-number-of-entries-per-day ` **show number of entries per day, method: GET**
+
+data:
+``` {
+        "2020-08-23": 0,
+        "2020-08-22": 2,
+        "2020-08-21": 0,
+        "2020-08-20": 2,
+        "2020-08-19": 1,
+        "2020-08-18": 0,
+        "2020-08-17": 0
+    }
+```
+
+* ` http://intellst-back.local/api/get-number-of-valid-entries-per-day ` **show number of valid entries per day, method: GET**
+
+data:
+``` {
+        "2020-08-23": 0,
+        "2020-08-22": 2,
+        "2020-08-21": 0,
+        "2020-08-20": 1,
+        "2020-08-19": 1,
+        "2020-08-18": 0,
+        "2020-08-17": 0
+    }
+```
+
+* ` http://intellst-back.local/api/get-number-of-returns-of-banned-people ` **get number of returns of banned people, method: GET**
+
+data:
+``` {
+        "2020-08-23": 0,
+        "2020-08-22": 3,
+        "2020-08-21": 0,
+        "2020-08-20": 2,
+        "2020-08-19": 1,
+        "2020-08-18": 0,
+        "2020-08-17": 0
+    }
 ```

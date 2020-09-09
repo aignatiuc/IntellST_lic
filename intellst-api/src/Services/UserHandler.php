@@ -8,15 +8,9 @@ use App\Transformer\UserTransformer;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserHandler
 {
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
-
     /**
      * @var UserRepository
      */
